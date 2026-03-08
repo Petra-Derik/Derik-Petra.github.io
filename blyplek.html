@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="af">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Akkommodasie — Derik &amp; Petra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=IM+Fell+English:ital@0;1&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #faf1e8;
+      --olive: #61642d;
+      --blue:  #768fc7;
+      --brown: #6b5c3f;
+      --rust:  #792f00;
+      --ink:   #2a2016;
+      --gold:  #c9a96e;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+    }
+
+    /* ── Compact Hero ── */
+    .hero {
+      background: var(--olive);
+      padding: 3rem 1.5rem 2.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(to right, transparent, rgba(201,169,110,0.45), transparent);
+    }
+    .hero-eyebrow {
+      font-size: 0.6rem; letter-spacing: 0.45em; text-transform: uppercase;
+      color: rgba(250,241,232,0.45); margin-bottom: 0.6rem; display: block;
+    }
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      font-weight: 300; color: var(--cream); line-height: 1;
+    }
+    .hero h1 em { font-style: italic; color: var(--gold); }
+    .hero-sub {
+      margin-top: 0.7rem;
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 1rem; color: rgba(250,241,232,0.55);
+    }
+
+    /* ── Main content ── */
+    .page { max-width: 960px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
+    /* ── Distance group ── */
+    .group { margin-bottom: 2rem; }
+
+    .group-header {
+      display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;
+    }
+    .dist-pill {
+      font-family: 'Jost', sans-serif; font-size: 0.58rem; font-weight: 500;
+      letter-spacing: 0.28em; text-transform: uppercase;
+      color: var(--cream); background: var(--rust);
+      padding: 0.3rem 0.75rem; white-space: nowrap; flex-shrink: 0;
+    }
+    .group-line { flex: 1; height: 1px; background: rgba(107,92,63,0.15); }
+
+    /* ── Cards row — horizontal scroll on mobile ── */
+    .cards-row {
+      display: flex; gap: 0.9rem;
+      flex-wrap: wrap;
+    }
+    @media (max-width: 600px) {
+      .cards-row { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 0.5rem; scroll-snap-type: x mandatory; }
+      .cards-row::-webkit-scrollbar { height: 3px; }
+      .cards-row::-webkit-scrollbar-track { background: rgba(107,92,63,0.1); }
+      .cards-row::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
+    }
+
+    .card {
+      flex: 0 0 auto;
+      width: clamp(160px, 40vw, 210px);
+      border: 1px solid rgba(107,92,63,0.18);
+      background: #fff;
+      padding: 1.1rem 1.2rem;
+      position: relative;
+      scroll-snap-align: start;
+      transition: border-color 0.25s, transform 0.25s;
+    }
+    @media (min-width: 601px) { .card { width: auto; flex: 1 1 180px; } }
+
+    .card::before {
+      content: '';
+      position: absolute; top: 0; left: 0;
+      width: 2px; height: 0;
+      background: var(--gold);
+      transition: height 0.3s ease;
+    }
+    .card:hover { border-color: rgba(201,169,110,0.45); transform: translateY(-2px); }
+    .card:hover::before { height: 100%; }
+
+    .card-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem; font-weight: 400;
+      color: var(--ink); line-height: 1.25;
+      margin-bottom: 0.5rem;
+    }
+    .card-detail {
+      font-size: 0.78rem; color: var(--brown); line-height: 1.55;
+    }
+    .card-detail a {
+      color: var(--rust); text-decoration: none;
+      display: inline-block; margin-top: 0.3rem;
+      font-size: 0.78rem;
+    }
+    .card-detail a:hover { text-decoration: underline; }
+
+    .card-tag {
+      display: inline-block; margin-top: 0.6rem;
+      font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--cream); background: var(--olive);
+      padding: 0.2rem 0.55rem;
+    }
+
+    /* ── Shuttle box ── */
+    .shuttle {
+      background: var(--blue);
+      padding: 1.6rem 2rem;
+      margin-top: 2.5rem;
+      position: relative; overflow: hidden;
+    }
+    .shuttle::before {
+      content: ''; position: absolute; inset: 0.7rem;
+      border: 1px solid rgba(250,241,232,0.14);
+      pointer-events: none;
+    }
+    .shuttle-top {
+      display: flex; align-items: center; gap: 0.7rem;
+      margin-bottom: 1rem;
+    }
+    .shuttle-icon {
+      font-family: 'IM Fell English', serif;
+      font-size: 1.4rem; color: var(--gold);
+    }
+    .shuttle-top h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem; font-weight: 400; color: var(--cream);
+    }
+    .shuttle-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+    }
+    @media (max-width: 420px) { .shuttle-grid { grid-template-columns: 1fr; } }
+    .shuttle-item h4 {
+      font-size: 0.58rem; letter-spacing: 0.28em; text-transform: uppercase;
+      color: rgba(250,241,232,0.45); margin-bottom: 0.3rem;
+    }
+    .shuttle-item p {
+      font-size: 0.85rem; color: rgba(250,241,232,0.8); line-height: 1.55;
+    }
+    .shuttle-item a { color: var(--gold); text-decoration: none; }
+    .shuttle-item a:hover { text-decoration: underline; }
+
+    /* ── Back button ── */
+    .back-row { text-align: center; margin-top: 3rem; }
+    .btn-back {
+      display: inline-block;
+      font-family: 'Jost', sans-serif; font-size: 0.68rem; font-weight: 500;
+      letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--cream); background: var(--rust);
+      padding: 0.85rem 2.2rem; text-decoration: none;
+      transition: background 0.25s, transform 0.2s;
+    }
+    .btn-back:hover { background: var(--brown); transform: translateY(-1px); }
+
+    /* fade-in on load */
+    .group { opacity: 0; transform: translateY(16px); animation: up 0.5s ease forwards; }
+    .group:nth-child(1) { animation-delay: 0.05s; }
+    .group:nth-child(2) { animation-delay: 0.12s; }
+    .group:nth-child(3) { animation-delay: 0.19s; }
+    .group:nth-child(4) { animation-delay: 0.26s; }
+    .group:nth-child(5) { animation-delay: 0.33s; }
+    .group:nth-child(6) { animation-delay: 0.40s; }
+    .group:nth-child(7) { animation-delay: 0.47s; }
+    .shuttle { opacity: 0; animation: up 0.5s ease 0.54s forwards; }
+    @keyframes up { to { opacity: 1; transform: none; } }
+  </style>
+</head>
+
+<body>
+
+<header class="hero">
+  <span class="hero-eyebrow">17 Oktober 2026 · Intiem Weddings, Pretoria</span>
+  <h1>Waar Slaap <em>Jy?</em></h1>
+  <p class="hero-sub">Akkommodasie naby die venue — gesorteer op afstand.</p>
+</header>
+
+<main class="page">
+
+  <!-- ≈ 2 km -->
+  <div class="group">
+    <div class="group-header">
+      <span class="dist-pill">≈ 2 km</span>
+      <div class="group-line"></div>
+    </div>
+    <div class="cards-row">
+      <div class="card">
+        <div class="card-name">Cussonia Crest</div>
+        <div class="card-detail">
+          Reg oorkant Intiem.<br>
+          <a href="mailto:info@cussoniacrest.com">info@cussoniacrest.com</a><br>
+          <a href="tel:0835663363">083 566 3363 · Melandi</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-name">Graceland Conference &amp; Lifestyle Centre</div>
+        <div class="card-detail">
+          Ruim, gemaklike verblyf.<br>
+          <a href="https://www.graceland-lifestylecentre.com" target="_blank">graceland-lifestylecentre.com →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ≈ 4 km -->
+  <div class="group">
+    <div class="group-header">
+      <span class="dist-pill">≈ 4 km</span>
+      <div class="group-line"></div>
+    </div>
+    <div class="cards-row">
+      <div class="card">
+        <div class="card-name">Bly 'n Bietjie</div>
+        <div class="card-detail"><a href="http://www.blynbietjie.co.za/" target="_blank">blynbietjie.co.za →</a></div>
+      </div>
+      <div class="card">
+        <div class="card-name">Shai Shai Hills</div>
+        <div class="card-detail"><a href="https://shaishaihills.co.za/" target="_blank">shaishaihills.co.za →</a></div>
+      </div>
+      <div class="card">
+        <div class="card-name">De Oude Kothuis</div>
+        <div class="card-detail"><a href="https://www.lekkeslaap.co.za/akkommodasie/de-oude-kothuis" target="_blank">Sien op Lekkeslaap →</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ≈ 5 km -->
+  <div class="group">
+    <div class="group-header">
+      <span class="dist-pill">≈ 5 km</span>
+      <div class="group-line"></div>
+    </div>
+    <div class="cards-row">
+      <div class="card">
+        <div class="card-name">Bethesda Lodge</div>
+        <div class="card-detail">
+          Spesiale Intiem-afslag beskikbaar.<br>
+          <a href="https://bethesdalodge.co.za/" target="_blank">bethesdalodge.co.za →</a><br>
+          <a href="https://book.nightsbridge.com/36213?promocode=INTIEMVENUE2026" target="_blank">Bespreek met afslag →</a>
+          <span class="card-tag" style="display:block;margin-top:0.5rem">Intiem-afslag</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ≈ 6 km -->
+  <div class="group">
+    <div class="group-header">
+      <span class="dist-pill">≈ 6 km</span>
+      <div class="group-line"></div>
+    </div>
+    <div class="cards-row">
+      <div class="card">
+        <div class="card-name">Tutuwedzo Lodge</div>
+        <div class="card-detail"><a href="http://tutuwedzo.co.za/" target="_blank">tutuwedzo.co.za →</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ≈ 9 km -->
+  <div class="group">
+    <div class="group-header">
+      <span class="dist-pill">≈ 9 km</span>
+      <div class="group-line"></div>
+    </div>
+    <div class="cards-row">
+      <div class="card">
+        <div class="card-name">Cheetah Lodge</div>
+        <div class="card-detail"><a href="https://www.lekkeslaap.co.za/akkommodasie/cheetah-lodge-19" target="_blank">Sien op Lekkeslaap →</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ≈ 15 km -->
+  <div class="group">
+    <div class="group-header">
+      <span class="dist-pill">≈ 15 km</span>
+      <div class="group-line"></div>
+    </div>
+    <div class="cards-row">
+      <div class="card">
+        <div class="card-name">Kassaboera Lodge</div>
+        <div class="card-detail"><a href="https://www.kassaboera.co.za/" target="_blank">kassaboera.co.za →</a></div>
+      </div>
+      <div class="card">
+        <div class="card-name">Seasons Golf Resort</div>
+        <div class="card-detail"><a href="https://www.seasonssa.co.za/" target="_blank">seasonssa.co.za →</a></div>
+      </div>
+      <div class="card">
+        <div class="card-name">La Montagne Guest Lodge</div>
+        <div class="card-detail"><a href="https://www.lamontagne-guestlodge.co.za/" target="_blank">lamontagne-guestlodge.co.za →</a></div>
+      </div>
+      <div class="card">
+        <div class="card-name">Migdsh Guesthouse</div>
+        <div class="card-detail"><a href="https://m.lekkeslaap.co.za/akkommodasie/migdsh-guesthouse" target="_blank">Sien op Lekkeslaap →</a></div>
+      </div>
+      <div class="card">
+        <div class="card-name">Three Oaks &amp; an Aloe</div>
+        <div class="card-detail"><a href="https://www.3oa.co.za/" target="_blank">3oa.co.za →</a></div>
+      </div>
+      <div class="card">
+        <div class="card-name">Nehema Manor</div>
+        <div class="card-detail"><a href="https://nehema.co.za/" target="_blank">nehema.co.za →</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ≈ 16 km -->
+  <div class="group">
+    <div class="group-header">
+      <span class="dist-pill">≈ 16 km</span>
+      <div class="group-line"></div>
+    </div>
+    <div class="cards-row">
+      <div class="card">
+        <div class="card-name">Stirling Manor</div>
+        <div class="card-detail"><a href="https://stirlingmanor.business.site/?utm_source=gmb&utm_medium=referral" target="_blank">Sien webwerf →</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shuttle -->
+  <div class="shuttle">
+    <div class="shuttle-top">
+      <span class="shuttle-icon">◎</span>
+      <h2>Shuttle Diens</h2>
+    </div>
+    <div class="shuttle-grid">
+      <div class="shuttle-item">
+        <h4>Diens</h4>
+        <p><strong style="color:var(--cream)">J &amp; S Shuttles</strong><br>Joniel Steyn</p>
+      </div>
+      <div class="shuttle-item">
+        <h4>Kontak</h4>
+        <p>
+          <a href="tel:0832320278">083 232 0278</a><br>
+          <a href="mailto:jonielsteyn@gmail.com">jonielsteyn@gmail.com</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="back-row">
+    <a class="btn-back" href="troue.html">← Terug na die Troudag</a>
+  </div>
+
+</main>
+
+</body>
+</html>
