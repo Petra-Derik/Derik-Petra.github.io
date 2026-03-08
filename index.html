@@ -1,116 +1,3 @@
-
-
-<!DOCTYPE html> <html lang="af"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Derik & Petra — Vir Altyd</title> <link rel="preconnect" href="https://fonts.googleapis.com"> <link rel="preconnect" href="https://fonts.gstat
-
-pasted
-
-i require a few responsiveness fixes, so on mobile not all the items in the gift list show it cutts of at the 9th item....then with the skenkings and wittebrood modal the bank details dont scale well to smaller devices, the rekening nommer stacks and looks messy, either decrease the size of the numbers or if a certain size is reachoded only display copy icon and not text or even change the rekeningnommer to banknommer.
-
-12:59 PM
-
-Check the skill files available
-Check the skill files available
-Looking at the issues:
-
-Gift grid cutoff at 9th item — likely a CSS max-height or overflow:hidden somewhere on the drawer
-Banking rows on mobile — the account number + copy button stacks messily; need responsive fixes
-Let me dig into the exact problematic CSS and fix it precisely.
-
-The gift grid cutoff is caused by .wishlist-drawer.open { max-height: 5000px } — if there are many items with images, 5000px isn't enough. The banking issue is the .bk-value.mono flex row overflowing on small screens.
-
-Here are the targeted fixes:
-
-
-Read the uploaded HTML file to work on it directly
-Read the uploaded HTML file to work on it directly
-I'll work directly from the provided document. Let me create the fixed file:
-
-
-Check what files are uploaded
-Check what files are uploaded
-I'll create the fixed file from the document in context, applying the three targeted fixes:
-
-
-Confirm working directory
-Confirm working directory
-The fixes are surgical CSS changes. Let me apply them directly to the output file:
-
-
-Prepare the CSS fixes
-Prepare the CSS fixes
-Now I'll apply all fixes to the HTML. The key changes are:
-
-max-height: 99999px on the open drawer
-flex-wrap: wrap + smaller font on .banking-row and .bk-value.mono
-Hide the copy button text label on very small screens (icon only)
-
-Ran 2 commands
-Ran 2 commands
-No file was uploaded — I'll work from the document in context and create the fixed version directly. I'll apply the three fixes as I write the file:
-
-
-Test heredoc
-Test heredoc
-I'll create the complete fixed HTML file using Python to write it cleanly, applying the three targeted fixes to the relevant CSS sections:
-
-
-Test the fix strings
-Test the fix strings
-The HTML is in the conversation context. Let me write the complete fixed file directly — I'll use create_file to write the full document with all three fixes applied, then also update the copy buttons to wrap the text in a .copy-label span:
-
-
-Wedding website with mobile responsiveness fixes applied
-Wedding website with mobile responsiveness fixes applied
-Claude's response was interrupted
-
-<!DOCTYPE html> <html lang="af"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Derik & Petra — Vir Altyd</title> <link rel="preconnect" href="https://fonts.googleapis.com"> <link rel="preconnect" href="https://fonts.gstat
-
-pasted
-
-1:00 PM
-Looking at the three issues, here are the exact CSS changes needed:
-
-Gift list cutoff — max-height: 5000px on the open drawer is too small for many items with images
-Banking rows on mobile — .banking-row needs flex-wrap: wrap and the account number row needs a smarter layout
-Copy button — shrink font on small screens, icon-only below ~400px
-
-Check if the file is available and find the key CSS blocks
-Check if the file is available and find the key CSS blocks
-No file uploaded — working from the document in context. I'll apply all three fixes precisely using Python string replacement:
-
-
-Ran 2 commands
-Ran 2 commands
-The file isn't uploaded — I'll write the complete fixed HTML directly. I'll use the document content and apply all three fixes inline:
-
-
-Ran 3 commands, created a file
-Ran 3 commands, created a file
-All 5 checks pass. Let me present the file:
-
-
-Presented file
-Presented file
-Here's what was fixed — all three are confirmed applied:
-
-Fix 1 — Gift list cutoff max-height on .wishlist-drawer.open changed from 5000px → 99999px. With images loading, 5000px was just enough to clip after ~9 items at certain screen sizes.
-
-Fix 2 — Banking row overflow .banking-row now has flex-wrap: wrap and gap: 0.6rem, and .bk-label gets flex-shrink: 0 so the label never squashes. If the number + button genuinely can't fit on one line, the row wraps cleanly instead of overflowing.
-
-Fix 3 — Account number / copy button on small screens .bk-value.mono font reduced from 0.93rem → 0.84rem (fits on one line for most phones). Below 460px, a @media query hides the .copy-label text span — leaving only the copy icon, which is still fully tappable. The copyText() JS was also updated to maintain the span structure when toggling to "Gekopieer" and back.
-
-Index
-Code · HTML 
-
-
-Want to be notified when Claude responds?
-
-
-
-Claude is AI and can make mistakes. Please double-check responses.
-Index · HTML
-Copy
-
 <!DOCTYPE html>
 <html lang="af">
 <head>
@@ -121,6 +8,7 @@ Copy
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=IM+Fell+English:ital@0;1&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="preload" as="image" href="assets/hero.4.webp" fetchpriority="high">
   <style>
     :root {
       --cream: #faf1e8;
@@ -142,6 +30,272 @@ Copy
       overflow-x: hidden;
     }
 
+    /*LOGIN SCREEN*/
+    #login {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--ink);
+      overflow: hidden;
+      padding: 2rem 0; 
+      -webkit-overflow-scrolling: touch;
+    }
+    #login::before {
+      content: '';
+      position: absolute;
+      inset: -50%;
+      width: 200%;
+      height: 200%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 160px;
+      opacity: 0.04;
+      pointer-events: none;
+      animation: grainShift 8s steps(2) infinite;
+    }
+    #login::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 50% 40%, rgba(201,169,110,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 50% at 20% 80%, rgba(121,47,0,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 50% at 80% 10%, rgba(97,100,45,0.10) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    @keyframes grainShift {
+      0%   { transform: translate(0,0); }
+      25%  { transform: translate(-2%,-1%); }
+      50%  { transform: translate(1%,2%); }
+      75%  { transform: translate(2%,-2%); }
+      100% { transform: translate(0,0); }
+    }
+    .login-wrap {
+      position: relative;
+      z-index: 2;
+      width: min(440px, calc(100vw - 2.4rem));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      animation: loginFadeIn 1.1s cubic-bezier(.16,1,.3,1) both;
+      overflow-y: auto; 
+      padding: 1rem;
+    }
+    @keyframes loginFadeIn {
+      from { opacity: 0; transform: translateY(32px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .login-ornament {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--gold);
+      letter-spacing: 0.12em;
+      margin-bottom: 1.8rem;
+      display: flex;
+      align-items: center;
+      gap: 1.1rem;
+      opacity: 0.85;
+    }
+    .login-ornament::before,
+    .login-ornament::after {
+      content: '';
+      width: 48px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(201,169,110,0.55));
+    }
+    .login-ornament::after {
+      background: linear-gradient(to left, transparent, rgba(201,169,110,0.55));
+    }
+    .login-names {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.2rem, 10vw, 5.2rem);
+      font-weight: 300;
+      color: var(--cream);
+      line-height: 0.92;
+      text-align: center;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.25rem;
+    }
+    .login-names em {
+      font-style: italic;
+      color: #e8d9c2;
+    }
+    .login-amp {
+      display: block;
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      color: var(--gold);
+      margin: 0.12em 0;
+    }
+    .login-date {
+      font-size: 0.65rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: rgba(250,241,232,0.35);
+      margin-bottom: 3rem;
+    }
+    .login-card {
+      width: 100%;
+      background: rgba(250,241,232,0.04);
+      border: 1px solid rgba(201,169,110,0.18);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: clamp(2rem, 5vw, 2.8rem);
+      display: flex;
+      flex-direction: column;
+      gap: 1.4rem;
+      position: relative;
+    }
+    .login-card::before,
+    .login-card::after {
+      content: '';
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      border-color: rgba(201,169,110,0.35);
+      border-style: solid;
+    }
+    .login-card::before {
+      top: 10px; left: 10px;
+      border-width: 1px 0 0 1px;
+    }
+    .login-card::after {
+      bottom: 10px; right: 10px;
+      border-width: 0 1px 1px 0;
+    }
+    .login-card-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      color: rgba(201,169,110,0.7);
+      text-align: center;
+    }
+    .login-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .login-field label {
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(250,241,232,0.38);
+      font-weight: 500;
+    }
+    .login-field-inner {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .login-field-inner i {
+      position: absolute;
+      left: 0;
+      color: rgba(201,169,110,0.45);
+      font-size: 0.85rem;
+      pointer-events: none;
+    }
+    .login-field input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(250,241,232,0.15);
+      padding: 0.6rem 0 0.6rem 1.6rem;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--cream);
+      outline: none;
+      transition: border-color 0.25s;
+      letter-spacing: 0.02em;
+    }
+    .login-field input::placeholder {
+      color: rgba(250,241,232,0.2);
+    }
+    .login-field input:focus {
+      border-bottom-color: var(--gold);
+    }
+    .pw-toggle {
+      position: absolute;
+      right: 0;
+      background: none;
+      border: none;
+      color: rgba(250,241,232,0.28);
+      cursor: pointer;
+      font-size: 0.8rem;
+      padding: 0.4rem;
+      transition: color 0.2s;
+    }
+    .pw-toggle:hover { color: var(--gold); }
+    .login-error {
+      font-size: 0.75rem;
+      color: #e07b5a;
+      text-align: center;
+      min-height: 1.1em;
+      letter-spacing: 0.04em;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .login-error.show { opacity: 1; }
+    .btn-login {
+      width: 100%;
+      padding: 0.95rem;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.38em;
+      text-transform: uppercase;
+      color: var(--cream);
+      background: var(--rust);
+      border: none;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s, transform 0.2s;
+      margin-top: 0.4rem;
+    }
+    .btn-login::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.06) 50%, transparent 70%);
+      transform: translateX(-100%);
+      transition: transform 0.5s;
+    }
+    .btn-login:hover { background: #8a3800; transform: translateY(-1px); }
+    .btn-login:hover::after { transform: translateX(100%); }
+    .btn-login:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .btn-login-inner { display: flex; align-items: center; justify-content: center; gap: 0.7rem; }
+    .btn-login .spinner {
+      display: none;
+      width: 13px; height: 13px;
+      border: 1.5px solid rgba(250,241,232,0.4);
+      border-top-color: var(--cream);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    .btn-login.loading .spinner { display: block; }
+    .btn-login.loading .btn-text { opacity: 0.6; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .login-footer-text {
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-align: center;
+      color: rgba(250,241,232,0.2);
+      margin-top: 1.8rem;
+    }
+    #login.fade-out {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.7s cubic-bezier(.4,0,.2,1);
+    }
+    #login.gone { display: none; }
+
+    /* HERO SECTION */
     #hero {
       position: relative;
       width: 100vw;
@@ -577,7 +731,7 @@ Copy
       background: var(--cream);
       padding: clamp(5rem, 12vh, 9rem) 1.5rem clamp(4rem, 10vh, 7rem);
     }
-    .registry-inner { max-width: 760px; margin: 0 auto; text-align: center; }
+    .registry-inner { max-width: 1200px; margin: 0 auto; text-align: center; }
     .registry-inner > p {
       font-family: 'Cormorant Garamond', serif;
       font-size: clamp(1rem, 2vw, 1.25rem);
@@ -641,7 +795,6 @@ Copy
       transition: max-height 0.7s cubic-bezier(.16,1,.3,1), opacity 0.5s ease;
       opacity: 0;
     }
-    /* FIX 1: Increased from 5000px — prevents gift list cutting off after ~9 items */
     .wishlist-drawer.open { max-height: 99999px; opacity: 1; }
 
     .wishlist-inner {
@@ -682,11 +835,30 @@ Copy
     .filter-btn.active { background: var(--olive); color: var(--cream); border-color: var(--olive); }
 
     .gift-grid {
-      display: grid;
+      /* display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 1.5rem;
-      text-align: left;
+      text-align: left;*/
+      display: flex; 
+  gap: 1.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+   -webkit-overflow-scrolling: touch;
     }
+    .gift-grid::-webkit-scrollbar {
+  height: 6px;
+}
+
+.gift-grid::-webkit-scrollbar-thumb {
+  background: rgba(107,92,63,0.25);
+}
+
+.gift-item {
+  flex: 0 0 220px;
+  scroll-snap-align: start;
+}
     .gift-loading {
       grid-column: 1 / -1;
       text-align: center;
@@ -1024,8 +1196,6 @@ Copy
     }
     .modal-close-btn:hover { background: rgba(26,16,6,0.75); }
 
-    /* ── FIX 2: Banking rows — flex-wrap + gap prevents account number
-       from overflowing on narrow modal widths on mobile ── */
     .banking-block {
       background: rgba(97,100,45,0.06);
       border: 1px solid rgba(201,169,110,0.22);
@@ -1063,9 +1233,6 @@ Copy
       flex-shrink: 0;
     }
     .bk-value { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; color: var(--ink); font-weight: 400; }
-
-    /* ── FIX 3: Smaller mono font so account number fits on one line.
-       Below 460px: hide "Kopieer" text, show copy icon only. ── */
     .bk-value.mono {
       font-family: 'Jost', sans-serif;
       font-weight: 400;
@@ -1363,6 +1530,57 @@ Copy
 </head>
 <body>
 
+<section id="login">
+  <div class="login-wrap">
+
+    <div class="login-ornament">17 Oktober 2026</div>
+
+    <h1 class="login-names">
+      Derik
+      <span class="login-amp">&amp;</span>
+      <em>Petra</em>
+    </h1>
+    <p class="login-date">Vir Altyd &nbsp;·&nbsp; Privaatuitnodiging</p>
+
+    <div class="login-card">
+      <span class="login-card-label">Gas Toegang</span>
+
+      <div class="login-field">
+        <label for="loginEmail">E-pos adres</label>
+        <div class="login-field-inner">
+          <i class="fa-regular fa-envelope"></i>
+          <input type="email" id="loginEmail" placeholder="jou@epos.com" autocomplete="email">
+        </div>
+      </div>
+
+      <div class="login-field">
+        <label for="loginPassword">Wagwoord</label>
+        <div class="login-field-inner">
+          <i class="fa-solid fa-lock"></i>
+          <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+          <button class="pw-toggle" type="button" id="pwToggle" aria-label="Wys wagwoord">
+            <i class="fa-regular fa-eye" id="pwToggleIcon"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="login-error" id="loginError">Verkeerde e-pos of wagwoord. Probeer asseblief weer.</div>
+
+      <button class="btn-login" id="loginBtn" onclick="handleLogin()">
+        <div class="btn-login-inner">
+          <div class="spinner"></div>
+          <span class="btn-text">Teken In</span>
+        </div>
+      </button>
+    </div>
+
+    <p class="login-footer-text">Slegs vir genooides &nbsp;·&nbsp; Derik &amp; Petra</p>
+  </div>
+</section>
+
+<!-- MAIN SITE -->
+<div id="siteContent" style="display:none">
+
 <!-- HERO -->
 <section id="hero">
   <img class="hero-photo" src="assets/hero.4.webp" alt="Derik en Petra">
@@ -1373,10 +1591,6 @@ Copy
       <em>Petra</em>
     </h1>
     <span class="hero-date">17 · Oktober · 2026 &nbsp;·&nbsp; Ons Troue</span>
-  </div>
-  <div class="scroll-cue" onclick="document.getElementById('welcome').scrollIntoView({behavior:'smooth'})">
-    <span>Scroll</span>
-    <div class="scroll-line"></div>
   </div>
 </section>
 
@@ -1642,6 +1856,8 @@ Copy
   <small>17 · Oktober · 2026 &nbsp;·&nbsp; Met liefde uit Pretoria</small>
 </footer>
 
+</div><!-- end #siteContent -->
+
 <!-- RESERVE MODAL -->
 <div class="reserve-overlay" id="reserveOverlay" onclick="closeModalOutside(event)">
   <div class="reserve-modal" id="reserveModal">
@@ -1653,10 +1869,6 @@ Copy
         <div class="field">
           <label>Jou Naam</label>
           <input type="text" id="reserverName" placeholder="Petra van der Berg" required>
-        </div>
-        <div class="field">
-          <label>Jou E-pos</label>
-          <input type="email" id="reserverEmail" placeholder="petra@voorbeeld.com" required>
         </div>
         <div class="field">
           <label>Boodskap (Opsioneel)</label>
@@ -1791,9 +2003,12 @@ Copy
 
 <!-- FIREBASE -->
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { initializeApp }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getFirestore, collection, getDocs, doc, updateDoc, getDoc }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey:            "AIzaSyBzRojC480A2CRPnYifz6NDxNyLiTAMT9c",
@@ -1804,9 +2019,22 @@ Copy
     appId:             "1:746685959504:web:61e4c1674468b6e2c27055"
   };
 
-  const app = initializeApp(firebaseConfig);
-  const db  = getFirestore(app);
+  const app  = initializeApp(firebaseConfig);
+  const db   = getFirestore(app);
+  const auth = getAuth(app);
 
+
+  window._firebaseLogin = async (email, password) => {
+    await signInWithEmailAndPassword(auth, email, password);
+  };
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      showSite();
+    }
+  });
+
+  /* ── Gift helpers ── */
   async function loadGifts() {
     const snapshot = await getDocs(collection(db, "gifts"));
     const gifts = [];
@@ -1829,31 +2057,114 @@ Copy
   }
 
   window._firebase = { loadGifts, reserveGift };
+  window._auth = auth;
 </script>
 
 <!-- APP SCRIPT -->
 <script>
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) { e.target.classList.add('visible'); revealObserver.unobserve(e.target); }
-    });
-  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
-
-  const photoCard = document.getElementById('infoPhotoCard');
-  if (photoCard) {
-    new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) photoCard.classList.add('visible'); });
-    }, { threshold: 0.15 }).observe(photoCard);
+  /* ── Show site, hide login ── */
+  function showSite() {
+    const loginEl = document.getElementById('login');
+    loginEl.classList.add('fade-out');
+    setTimeout(() => loginEl.classList.add('gone'), 700);
+    document.getElementById('siteContent').style.display = 'block';
+    initReveal();
   }
 
-  const heroPhoto = document.querySelector('.hero-photo');
-  window.addEventListener('scroll', () => {
-    if (window.scrollY < window.innerHeight) {
-      heroPhoto.style.transform = `translateY(${window.scrollY * 0.35}px)`;
-    }
-  }, { passive: true });
+  /* ── Login handler (called by button onclick) ── */
+  async function handleLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass  = document.getElementById('loginPassword').value;
+    const btn   = document.getElementById('loginBtn');
+    const err   = document.getElementById('loginError');
 
+    if (!email || !pass) {
+      showLoginError('Vul asseblief jou e-pos en wagwoord in.');
+      return;
+    }
+
+    btn.classList.add('loading');
+    btn.disabled = true;
+    err.classList.remove('show');
+
+    try {
+      await window._firebaseLogin(email, pass);
+      /* onAuthStateChanged will call showSite() */
+    } catch (e) {
+      btn.classList.remove('loading');
+      btn.disabled = false;
+      showLoginError('Verkeerde e-pos of wagwoord. Probeer asseblief weer.');
+    }
+  }
+
+  function showLoginError(msg) {
+    const err = document.getElementById('loginError');
+    err.textContent = msg;
+    err.classList.add('show');
+  }
+
+  /* Allow Enter key to submit login */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      const loginEl = document.getElementById('login');
+      if (loginEl && !loginEl.classList.contains('gone') && !loginEl.classList.contains('fade-out')) {
+        handleLogin();
+      }
+    }
+  });
+
+  /* Password visibility toggle */
+  document.getElementById('pwToggle').addEventListener('click', function () {
+    const input = document.getElementById('loginPassword');
+    const icon  = document.getElementById('pwToggleIcon');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.className = 'fa-regular fa-eye-slash';
+    } else {
+      input.type = 'password';
+      icon.className = 'fa-regular fa-eye';
+    }
+  });
+
+  async function waitForFirebase() {
+    let attempts = 0;
+    while (!window._firebaseLogin && attempts < 50) {
+      await new Promise(r => setTimeout(r, 100));
+      attempts++;
+    }
+  }
+  waitForFirebase();
+
+  let revealInited = false;
+  function initReveal() {
+    if (revealInited) return;
+    revealInited = true;
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); revealObserver.unobserve(e.target); }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    const photoCard = document.getElementById('infoPhotoCard');
+    if (photoCard) {
+      new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) photoCard.classList.add('visible'); });
+      }, { threshold: 0.15 }).observe(photoCard);
+    }
+
+    const heroPhoto = document.querySelector('.hero-photo');
+    if (heroPhoto) {
+      window.addEventListener('scroll', () => {
+        if (window.scrollY < window.innerHeight) {
+          heroPhoto.style.transform = `translateY(${window.scrollY * 0.35}px)`;
+        }
+      }, { passive: true });
+    }
+  }
+
+  /* ── RSVP ── */
   function setAttendance(yes) {
     document.getElementById('attending').value = yes ? 'yes' : 'no';
     document.getElementById('attYes').classList.toggle('active', yes);
@@ -1885,6 +2196,7 @@ Copy
     } catch { alert('Geen internetverbinding. Probeer asseblief weer.'); }
   });
 
+  /* ── Modals ── */
   function openSkenking() { document.getElementById('skenkingOverlay').classList.add('open'); document.body.style.overflow = 'hidden'; }
   function openWittebrood() { document.getElementById('wittebroodOverlay').classList.add('open'); document.body.style.overflow = 'hidden'; }
   function closeGiftModal(e, id) {
@@ -1917,6 +2229,7 @@ Copy
     });
   }
 
+  /* ── Gift / Wishlist ── */
   let allGifts = [], currentFilter = 'alles', selectedGiftId = null, wishlistLoaded = false;
   const categoryLabels = { huis: 'Huis', kombuis: 'Kombuis', koffie: 'Koffie', wittebrood: 'Wittebroodfonds' };
 
@@ -1994,11 +2307,11 @@ Copy
   document.getElementById('reserveForm').addEventListener('submit', async function (e) {
     e.preventDefault();
     const name  = document.getElementById('reserverName').value.trim();
-    const email = document.getElementById('reserverEmail').value.trim();
+    const emailInput = window._auth.currentUser.email;
     const btn   = document.getElementById('reserveSubmitBtn');
     btn.disabled = true; btn.textContent = 'Besig…';
     try {
-      await window._firebase.reserveGift(selectedGiftId, name, email);
+      await window._firebase.reserveGift(selectedGiftId, name, emailInput);
       const gift = allGifts.find(g => g.id === selectedGiftId);
       if (gift) { gift.reserved = true; gift.available = false; }
       const card = document.getElementById(`gift-${selectedGiftId}`);
