@@ -873,7 +873,7 @@
       padding-bottom: 0.5rem;
       scroll-snap-type: x mandatory;
       scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
+      -webkit-overflow-scrolling: touch;
     }
     .gift-grid::-webkit-scrollbar {
   height: 6px;
@@ -1130,10 +1130,11 @@
     }
     .reserve-close:hover { color: var(--rust); }
     .reserve-modal-label {
-      font-size: 0.6rem;
-      letter-spacing: 0.35em;
+      font-size: 0.65rem;
+      letter-spacing: 0.20em;
+      font-weight: 400;
       text-transform: uppercase;
-      color: var(--olive);
+      color: var(--rust);
       margin-bottom: 0.5rem;
       display: block;
     }
@@ -1795,6 +1796,7 @@
           <button class="filter-btn"        data-filter="huis"    onclick="filterWishlist('huis')">Huis</button>
           <button class="filter-btn"        data-filter="kombuis" onclick="filterWishlist('kombuis')">Kombuis</button>
           <button class="filter-btn"        data-filter="koffie"  onclick="filterWishlist('koffie')">Koffie</button>
+          <button class="filter-btn"        data-filter="bordspeletjies"  onclick="filterWishlist('bordspeletjies')">Bordspeletjies</button>
         </div>
         <div class="gift-grid" id="giftGrid">
           <p class="gift-loading">Besig om wenslys te laai…</p>
@@ -1861,7 +1863,6 @@
         <button type="submit" class="btn-rsvp">Stuur RSVP</button>
       </form>
       <p class="rsvp-note">
-        Teen <strong>1 Augustus 2026</strong> &nbsp;·&nbsp;
         Kontak ons <a href="mailto:petraderikkorf@gmail.com" style="color:var(--rust)">petraderikkorf@gmail.com</a>
       </p>
     </div>
@@ -1885,9 +1886,10 @@
 <div class="reserve-overlay" id="reserveOverlay" onclick="closeModalOutside(event)">
   <div class="reserve-modal" id="reserveModal">
     <button class="reserve-close" onclick="closeModal()" aria-label="Sluit">×</button>
-    <span class="reserve-modal-label">Reserveer 'n Geskenk</span>
-    <h3 id="modalItemName">Item Naam</h3>
-    <div id="reserveFormWrap">
+    <span class="reserve-modal-label">Jy Reserveer Nou</span>
+    <h3 id="modalItemName" style="margin-bottom: 0;">Item Naam</h3>
+    <p id="modalItemDesc" class="reserve-item-desc"></p>
+    <div id="reserveFormWrap" style="margin-top: 15px;">
       <form class="reserve-form" id="reserveForm">
         <div class="field">
           <label>Jou Naam</label>
@@ -2319,6 +2321,7 @@
     if (!gift || gift.reserved) return;
     selectedGiftId = giftId;
     document.getElementById('modalItemName').textContent = gift.name;
+    document.getElementById('modalItemDesc').textContent = gift.description || '';
     document.getElementById('reserveFormWrap').style.display = '';
     document.getElementById('reserveSuccess').classList.remove('show');
     document.getElementById('reserveForm').reset();
