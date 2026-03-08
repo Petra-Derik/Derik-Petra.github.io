@@ -460,7 +460,7 @@
     .reveal-delay-4 { transition-delay: 0.46s; }
 
     #welcome {
-      background: var(--cream);
+      background: #f0e5d5;
       padding: clamp(5rem, 12vh, 9rem) 1.5rem clamp(4rem, 10vh, 8rem);
     }
     .welcome-inner { max-width: 680px; margin: 0 auto; text-align: center; }
@@ -657,7 +657,34 @@
       background: rgba(250,241,232,0.2);
       transform: translateX(-50%);
     }
-    @media (max-width: 620px) { .timeline::before { left: 24px; } }
+    @media (max-width: 620px) { 
+      .timeline::before { left: 24px; }
+
+      .tl-item {
+        grid-template-columns: 48px 1fr;
+        grid-template-rows: auto auto;
+        row-gap: 0.25rem;
+      }
+
+      /* dot always left */
+      .tl-dot {
+        grid-column: 1;
+        grid-row: 1 / span 2;
+      }
+
+      /* time always first on right */
+      .tl-time {
+        grid-column: 2;
+        grid-row: 1;
+        text-align: left;
+      }
+
+      /* title + description always below time */
+      .tl-content {
+        grid-column: 2;
+        grid-row: 2;
+        text-align: left;
+      } }
 
     .tl-item {
       display: grid;
@@ -749,20 +776,20 @@
       border: 1px solid rgba(107,92,63,0.2);
       padding: 2rem 1.5rem;
       text-decoration: none;
-      color: var(--ink);
+      color: var(--cream);
       transition: all 0.3s;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 0.7rem;
       cursor: pointer;
-      background: transparent;
+      background: var(--blue);
       font-family: inherit;
     }
     .reg-card:hover {
-      background: var(--rust);
-      color: var(--cream);
-      border-color: var(--rust);
+      background: transparent;
+      color: var(--brown);
+      border-color: var(--brown);
       transform: translateY(-3px);
     }
     .reg-card-icon { font-size: 1.6rem; }
@@ -786,7 +813,7 @@
       cursor: pointer;
       transition: all 0.3s;
     }
-    .btn-wishlist:hover { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+    .btn-wishlist:hover { background: var(--olive); color: var(--cream); border-color: var(--olive); }
     .btn-wishlist svg { transition: transform 0.3s; }
     .btn-wishlist.open svg { transform: rotate(180deg); }
 
@@ -841,12 +868,12 @@
       gap: 1.5rem;
       text-align: left;*/
       display: flex; 
-  gap: 1.5rem;
-  overflow-x: auto;
-  padding-bottom: 0.5rem;
-  scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
-   -webkit-overflow-scrolling: touch;
+      gap: 1.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
     }
     .gift-grid::-webkit-scrollbar {
   height: 6px;
@@ -1732,7 +1759,7 @@
 <section id="registry">
   <div class="registry-inner">
     <span class="section-label reveal">Belê in die Liefde</span>
-    <h2 class="section-title reveal reveal-delay-1">Geskenk <em>Lys</em></h2>
+    <h2 class="section-title reveal reveal-delay-1">Geskenk <span style="color: #768fc7;">Lys</span></h2>
     <div class="divider-line reveal reveal-delay-2"><div class="divider-dot"></div></div>
     <p class="reveal reveal-delay-2">
       Jou teenwoordigheid by ons troue is regtig die grootste geskenk.
@@ -1788,17 +1815,13 @@
       <form class="rsvp-form" id="rsvpForm" action="https://formspree.io/f/mjgavdrv" method="POST">
         <div class="form-row">
           <div class="field">
-            <label for="firstName">Naam</label>
-            <input type="text" id="firstName" name="firstName" placeholder="Petra" required>
-          </div>
-          <div class="field">
-            <label for="lastName">Van</label>
-            <input type="text" id="lastName" name="lastName" placeholder="Korf" required>
+            <label for="firstName">Naam &amp; Van</label>
+            <input type="text" id="firstName" name="firstName" placeholder="Petra Korf" required>
           </div>
         </div>
-        <div class="field">
+        <div class="field" style="display: none;">
           <label for="email">E-pos</label>
-          <input type="email" id="email" name="email" placeholder="petra@voorbeeld.com" required>
+          <input type="email" id="email" name="email"  required>
         </div>
         <div class="field">
           <label>Kom jy?</label>
@@ -1831,7 +1854,7 @@
             <input type="text" id="dietary" name="dietary" placeholder="bv. vegetaries, neut-allergie…">
           </div>
         </div>
-        <div class="field">
+        <div class="field" style="margin-top: 10px">
           <label for="message">Boodskap (opsioneel)</label>
           <textarea id="message" name="message" placeholder="Deel jou wense, liefde of gunsteling herinnering…"></textarea>
         </div>
@@ -1839,7 +1862,7 @@
       </form>
       <p class="rsvp-note">
         Teen <strong>1 Augustus 2026</strong> &nbsp;·&nbsp;
-        Vrae? <a href="mailto:petraderikkorf@gmail.com" style="color:var(--rust)">petraderikkorf@gmail.com</a>
+        Kontak ons <a href="mailto:petraderikkorf@gmail.com" style="color:var(--rust)">petraderikkorf@gmail.com</a>
       </p>
     </div>
     <div class="rsvp-success" id="rsvpSuccess">
@@ -2030,6 +2053,10 @@
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
+    const emailField = document.getElementById('email');
+    if (emailField) {
+      emailField.value = user.email;
+    }
       showSite();
     }
   });
