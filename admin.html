@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="af">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Derik &amp; Petra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=IM+Fell+English:ital@0;1&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <style>
+    :root {
+      --cream:  #faf1e8;
+      --olive:  #61642d;
+      --brown:  #6b5c3f;
+      --rust:   #792f00;
+      --ink:    #2a2016;
+      --gold:   #c9a96e;
+      --bg:     #111009;
+      --surface:#1c1a12;
+      --border: rgba(201,169,110,0.14);
+      --text:   rgba(250,241,232,0.88);
+      --muted:  rgba(250,241,232,0.4);
+      --green:  #4a7c59;
+      --red:    #7c3a2a;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'Jost', sans-serif; font-weight: 300; min-height: 100vh; }
+
+    /* ── Auth Gate ── */
+    #authGate {
+      position: fixed; inset: 0; z-index: 9999;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--bg);
+    }
+    .auth-spinner { width: 36px; height: 36px; border: 2px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #authGate.gone { display: none; }
+
+    /* ── Sidebar ── */
+    .layout { display: flex; min-height: 100vh; }
+
+    .sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 2rem 0;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 100;
+    }
+    .sidebar-logo {
+      padding: 0 1.6rem 2rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+    .sidebar-logo-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.6rem;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .sidebar-logo-sub {
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 0.3rem;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.7rem 1.6rem;
+      cursor: pointer;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      transition: all 0.2s;
+      border-left: 2px solid transparent;
+    }
+    .nav-item:hover { color: var(--text); background: rgba(201,169,110,0.05); }
+    .nav-item.active { color: var(--gold); border-left-color: var(--gold); background: rgba(201,169,110,0.07); }
+    .nav-item i { width: 16px; text-align: center; font-size: 0.9rem; }
+    .sidebar-spacer { flex: 1; }
+    .sidebar-user {
+      padding: 1rem 1.6rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+    .user-avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: rgba(201,169,110,0.15);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem;
+      color: var(--gold);
+      flex-shrink: 0;
+    }
+    .user-email { font-size: 0.7rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .btn-signout {
+      margin-left: auto;
+      background: none; border: none; cursor: pointer;
+      color: var(--muted); font-size: 0.85rem;
+      transition: color 0.2s;
+      flex-shrink: 0;
+    }
+    .btn-signout:hover { color: var(--gold); }
+
+    /* ── Main ── */
+    .main {
+      margin-left: 240px;
+      flex: 1;
+      padding: 2.5rem 2rem;
+      max-width: 1200px;
+    }
+
+    /* ── Panels ── */
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* ── Page header ── */
+    .page-header {
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: flex-end;
+      gap: 1rem;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+    .page-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.2rem;
+      font-weight: 300;
+      color: var(--cream);
+      line-height: 1;
+    }
+    .page-title em { font-style: italic; color: var(--gold); }
+    .page-meta { font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+
+    /* ── Stat cards ── */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1.2rem 1.4rem;
+    }
+    .stat-label { font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
+    .stat-value { font-family: 'Cormorant Garamond', serif; font-size: 2.4rem; font-weight: 300; color: var(--cream); line-height: 1; }
+    .stat-sub { font-size: 0.7rem; color: var(--muted); margin-top: 0.25rem; }
+    .stat-card.accent-gold { border-color: rgba(201,169,110,0.35); }
+    .stat-card.accent-green { border-color: rgba(74,124,89,0.4); }
+    .stat-card.accent-red   { border-color: rgba(124,58,42,0.5); }
+
+    /* ── Section header ── */
+    .section-hdr {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .section-hdr-title {
+      font-size: 0.65rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: flex; align-items: center; gap: 0.6rem;
+    }
+    .section-hdr-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .section-hdr { flex: 1; }
+
+    /* ── Tables ── */
+    .table-wrap {
+      overflow-x: auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+    th {
+      text-align: left;
+      padding: 0.75rem 1rem;
+      font-size: 0.58rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid rgba(201,169,110,0.06);
+      vertical-align: top;
+      line-height: 1.45;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(201,169,110,0.03); }
+    .td-name { color: var(--cream); font-weight: 400; }
+    .td-muted { color: var(--muted); font-size: 0.75rem; }
+    .td-email { font-size: 0.75rem; color: var(--muted); }
+
+    /* ── Badges ── */
+    .badge {
+      display: inline-block;
+      font-size: 0.55rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.55rem;
+      border-radius: 2px;
+    }
+    .badge-green  { background: rgba(74,124,89,0.18); color: #7ec89a; border: 1px solid rgba(74,124,89,0.3); }
+    .badge-red    { background: rgba(124,58,42,0.18); color: #e07b5a; border: 1px solid rgba(124,58,42,0.3); }
+    .badge-gold   { background: rgba(201,169,110,0.12); color: var(--gold); border: 1px solid rgba(201,169,110,0.3); }
+    .badge-muted  { background: rgba(250,241,232,0.05); color: var(--muted); border: 1px solid rgba(250,241,232,0.08); }
+
+    /* ── Toggle button ── */
+    .toggle-btn {
+      font-family: 'Jost', sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.7rem;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .toggle-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .toggle-btn.is-reserved { border-color: rgba(74,124,89,0.4); color: #7ec89a; }
+    .toggle-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ── Search / filter bar ── */
+    .filter-bar {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.2rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .search-input {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.5rem 0.9rem;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.82rem;
+      outline: none;
+      flex: 1;
+      min-width: 180px;
+      transition: border-color 0.2s;
+    }
+    .search-input:focus { border-color: rgba(201,169,110,0.4); }
+    .search-input::placeholder { color: var(--muted); }
+    .filter-select {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.5rem 0.9rem;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.78rem;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* ── Gift photo thumb ── */
+    .gift-thumb {
+      width: 40px; height: 40px;
+      object-fit: cover;
+      background: rgba(201,169,110,0.08);
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+      vertical-align: middle;
+      display: inline-block;
+    }
+    .gift-thumb-placeholder {
+      width: 40px; height: 40px;
+      background: rgba(201,169,110,0.08);
+      border: 1px solid var(--border);
+      display: inline-flex; align-items: center; justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--gold);
+      vertical-align: middle;
+    }
+
+    /* ── Gift name cell ── */
+    .gift-cell { display: flex; align-items: center; gap: 0.75rem; }
+    .gift-cell-info { display: flex; flex-direction: column; gap: 0.15rem; }
+
+    /* ── RSVP detail expand ── */
+    .rsvp-detail-row td {
+      background: rgba(201,169,110,0.04);
+      padding: 0.5rem 1rem 1rem 2rem;
+    }
+    .rsvp-detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.6rem 1.5rem;
+    }
+    .rsvp-detail-field { display: flex; flex-direction: column; gap: 0.15rem; }
+    .rsvp-detail-label { font-size: 0.58rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); }
+    .rsvp-detail-value { font-size: 0.82rem; color: var(--cream); }
+
+    /* ── Song list ── */
+    .songs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 0.8rem;
+    }
+    .song-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1rem 1.2rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8rem;
+    }
+    .song-icon { color: var(--gold); font-size: 1rem; padding-top: 0.1rem; flex-shrink: 0; }
+    .song-title { font-size: 0.88rem; color: var(--cream); }
+    .song-guest { font-size: 0.7rem; color: var(--muted); margin-top: 0.15rem; }
+
+    /* ── Loading state ── */
+    .loading-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+    }
+    .loading-state i { display: block; font-size: 1.5rem; margin-bottom: 0.8rem; color: var(--gold); opacity: 0.5; animation: spin 1.2s linear infinite; }
+
+    /* ── Empty state ── */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 2rem;
+      color: var(--muted);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+    }
+
+    /* ── Toast ── */
+    #toast {
+      position: fixed;
+      bottom: 2rem; right: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 0.8rem 1.4rem;
+      font-size: 0.78rem;
+      color: var(--text);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      z-index: 9000;
+    }
+    #toast.show { opacity: 1; }
+    #toast.success { border-color: rgba(74,124,89,0.5); color: #7ec89a; }
+    #toast.error   { border-color: rgba(124,58,42,0.5); color: #e07b5a; }
+
+    /* ── Mobile ── */
+    @media (max-width: 700px) {
+      .sidebar { width: 100%; height: auto; position: static; flex-direction: row; padding: 1rem; border-right: none; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+      .sidebar-logo { padding: 0 1rem 0 0; border-bottom: none; margin-bottom: 0; }
+      .sidebar-spacer, .sidebar-user { display: none; }
+      .nav-item { padding: 0.5rem 0.8rem; }
+      .main { margin-left: 0; padding: 1.2rem; }
+      .layout { flex-direction: column; }
+    }
+
+    /* ── Chevron ── */
+    .row-expand-btn {
+      background: none; border: none; cursor: pointer;
+      color: var(--muted); font-size: 0.8rem;
+      transition: color 0.2s, transform 0.2s;
+    }
+    .row-expand-btn:hover { color: var(--gold); }
+    .row-expand-btn.open { transform: rotate(180deg); color: var(--gold); }
+  </style>
+</head>
+<body>
+
+<!-- Auth loading gate -->
+<div id="authGate"><div class="auth-spinner"></div></div>
+
+<div class="layout" id="appLayout" style="display:none">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-title">Derik &amp; Petra</div>
+    <div class="sidebar-logo-sub">Admin · 17 Oktober 2026</div>
+  </div>
+  <nav>
+    <div class="nav-item active" onclick="showPanel('dashboard')" id="nav-dashboard">
+      <i class="fa-solid fa-chart-simple"></i> Oorsig
+    </div>
+    <div class="nav-item" onclick="showPanel('rsvps')" id="nav-rsvps">
+      <i class="fa-solid fa-envelope-open-text"></i> RSVPs
+    </div>
+    <div class="nav-item" onclick="showPanel('gifts')" id="nav-gifts">
+      <i class="fa-solid fa-gift"></i> Geskenke
+    </div>
+    <div class="nav-item" onclick="showPanel('songs')" id="nav-songs">
+      <i class="fa-solid fa-music"></i> Liedjie Versoeke
+    </div>
+    <div class="nav-item" onclick="window.location.href='index.html'">
+      <i class="fa-solid fa-arrow-left"></i> Terug na Webwerf
+    </div>
+  </nav>
+  <div class="sidebar-spacer"></div>
+  <div class="sidebar-user">
+    <div class="user-avatar" id="userInitials">?</div>
+    <div class="user-email" id="userEmail">laden…</div>
+    <button class="btn-signout" onclick="signOut()" title="Teken uit">
+      <i class="fa-solid fa-arrow-right-from-bracket"></i>
+    </button>
+  </div>
+</aside>
+
+  <!-- Main content -->
+  <main class="main">
+
+    <!-- ── DASHBOARD ── -->
+    <div class="panel active" id="panel-dashboard">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Goeie dag, <em>admin</em></h1>
+          <div class="page-meta" id="dashDate">Laai…</div>
+        </div>
+        <button class="toggle-btn" onclick="refreshAll()"><i class="fa-solid fa-rotate"></i> Verfris</button>
+      </div>
+      <div class="stat-grid" id="statGrid">
+        <div class="stat-card accent-gold"><div class="stat-label">Totale RSVPs</div><div class="stat-value" id="statTotalRsvp">—</div></div>
+        <div class="stat-card accent-green"><div class="stat-label">Kom Bywoon</div><div class="stat-value" id="statAttending">—</div><div class="stat-sub" id="statAttendingGuests">— gaste</div></div>
+        <div class="stat-card accent-red"><div class="stat-label">Kan Nie Kom</div><div class="stat-value" id="statNotAttending">—</div></div>
+        <div class="stat-card"><div class="stat-label">Geskenke Totaal</div><div class="stat-value" id="statTotalGifts">—</div></div>
+        <div class="stat-card accent-green"><div class="stat-label">Gereserveer</div><div class="stat-value" id="statReserved">—</div></div>
+        <div class="stat-card"><div class="stat-label">Beskikbaar</div><div class="stat-value" id="statAvailable">—</div></div>
+        <div class="stat-card accent-gold"><div class="stat-label">Liedjie Versoeke</div><div class="stat-value" id="statSongs">—</div></div>
+      </div>
+
+      <div class="section-hdr">
+        <div class="section-hdr-title" style="width:100%">Laaste RSVPs <span style="flex:1;height:1px;background:var(--border);display:block;margin-left:0.8rem;"></span></div>
+      </div>
+      <div class="table-wrap" id="dashRecentRsvps">
+        <div class="loading-state"><i class="fa-solid fa-spinner"></i>Laai RSVPs…</div>
+      </div>
+    </div>
+
+    <!-- ── RSVPS ── -->
+    <div class="panel" id="panel-rsvps">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">RSVP <em>Antwoorde</em></h1>
+          <div class="page-meta" id="rsvpCount">Laai…</div>
+        </div>
+      </div>
+      <div class="filter-bar">
+        <input class="search-input" id="rsvpSearch" placeholder="Soek na naam…" oninput="renderRsvps()">
+        <select class="filter-select" id="rsvpFilter" onchange="renderRsvps()">
+          <option value="all">Alle antwoorde</option>
+          <option value="yes">Kom bywoon</option>
+          <option value="no">Kan nie kom</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Naam</th>
+              <th>Bywoning</th>
+              <th>Gaste</th>
+              <th>Lied Versoek</th>
+              <th>Dieet</th>
+              <th>Datum</th>
+            </tr>
+          </thead>
+          <tbody id="rsvpTableBody">
+            <tr><td colspan="7"><div class="loading-state"><i class="fa-solid fa-spinner"></i>Laai…</div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── GIFTS ── -->
+    <div class="panel" id="panel-gifts">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Geskenk <em>Lys</em></h1>
+          <div class="page-meta" id="giftCount">Laai…</div>
+        </div>
+      </div>
+      <div class="filter-bar">
+        <input class="search-input" id="giftSearch" placeholder="Soek na item…" oninput="renderGifts()">
+        <select class="filter-select" id="giftCatFilter" onchange="renderGifts()">
+          <option value="all">Alle kategorieë</option>
+          <option value="kombuis">Kombuis</option>
+          <option value="huis">Huis</option>
+          <option value="koffie">Koffie</option>
+          <option value="bordspeletjies">Bordspeletjies</option>
+        </select>
+        <select class="filter-select" id="giftStatusFilter" onchange="renderGifts()">
+          <option value="all">Alle statuse</option>
+          <option value="reserved">Gereserveer</option>
+          <option value="available">Beskikbaar</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Kategorie</th>
+              <th>Status</th>
+              <th>Gereserveer deur</th>
+              <th>E-pos</th>
+              <th>Datum</th>
+              <th>Aksie</th>
+            </tr>
+          </thead>
+          <tbody id="giftTableBody">
+            <tr><td colspan="7"><div class="loading-state"><i class="fa-solid fa-spinner"></i>Laai…</div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── SONGS ── -->
+    <div class="panel" id="panel-songs">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Liedjie <em>Versoeke</em></h1>
+          <div class="page-meta" id="songCount">Laai…</div>
+        </div>
+      </div>
+      <div id="songsGrid" class="songs-grid">
+        <div class="loading-state" style="grid-column:1/-1"><i class="fa-solid fa-spinner"></i>Laai liedjies…</div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div id="toast"></div>
+
+<!-- FIREBASE -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import {
+    getFirestore, collection, getDocs, doc, updateDoc, getDoc
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import {
+    getAuth, onAuthStateChanged, signOut as fbSignOut
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey:            "AIzaSyBzRojC480A2CRPnYifz6NDxNyLiTAMT9c",
+    authDomain:        "trougeskenke.firebaseapp.com",
+    projectId:         "trougeskenke",
+    storageBucket:     "trougeskenke.firebasestorage.app",
+    messagingSenderId: "746685959504",
+    appId:             "1:746685959504:web:61e4c1674468b6e2c27055"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const db   = getFirestore(app);
+  const auth = getAuth(app);
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) { window.location.href = "index.html"; return; }
+
+    // Verify admin role
+    try {
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      if (!userDoc.exists() || userDoc.data().role !== "admin") {
+        window.location.href = "index.html";
+        return;
+      }
+    } catch(e) {
+      window.location.href = "index.html";
+      return;
+    }
+
+    // Show app
+    document.getElementById('authGate').classList.add('gone');
+    document.getElementById('appLayout').style.display = 'flex';
+    document.getElementById('userEmail').textContent = user.email;
+    document.getElementById('userInitials').textContent = user.email.charAt(0).toUpperCase();
+
+    // Load data
+    await loadAll();
+  });
+
+  window._signOut = async () => {
+    await fbSignOut(auth);
+    window.location.href = "index.html";
+  };
+
+  async function loadAll() {
+    // Load RSVPs
+    const rsvpSnap = await getDocs(collection(db, "rsvps"));
+    window._rsvps = [];
+    rsvpSnap.forEach(d => window._rsvps.push({ id: d.id, ...d.data() }));
+    window._rsvps.sort((a, b) => {
+      const ta = a.submittedAt?.toDate?.()?.getTime?.() || 0;
+      const tb = b.submittedAt?.toDate?.()?.getTime?.() || 0;
+      return tb - ta;
+    });
+
+    // Load gifts
+    const giftSnap = await getDocs(collection(db, "gifts"));
+    window._gifts = [];
+    giftSnap.forEach(d => window._gifts.push({ id: d.id, ...d.data() }));
+    window._gifts.sort((a, b) => a.id.localeCompare(b.id));
+
+    updateStats();
+    renderDashRecent();
+    renderRsvps();
+    renderGifts();
+    renderSongs();
+  }
+
+  function updateStats() {
+    const rsvps    = window._rsvps || [];
+    const gifts    = window._gifts || [];
+    const attending    = rsvps.filter(r => r.attending === 'yes');
+    const notAttending = rsvps.filter(r => r.attending === 'no');
+    const totalGuests  = attending.reduce((s, r) => s + (parseInt(r.guests) || 1), 0);
+    const reserved  = gifts.filter(g => g.reserved);
+    const available = gifts.filter(g => !g.reserved);
+    const songs     = rsvps.filter(r => r.songRequest && r.songRequest.trim());
+
+    document.getElementById('statTotalRsvp').textContent     = rsvps.length;
+    document.getElementById('statAttending').textContent     = attending.length;
+    document.getElementById('statAttendingGuests').textContent = `${totalGuests} gaste`;
+    document.getElementById('statNotAttending').textContent  = notAttending.length;
+    document.getElementById('statTotalGifts').textContent    = gifts.length;
+    document.getElementById('statReserved').textContent      = reserved.length;
+    document.getElementById('statAvailable').textContent     = available.length;
+    document.getElementById('statSongs').textContent         = songs.length;
+
+    const now = new Date();
+    document.getElementById('dashDate').textContent = now.toLocaleDateString('af-ZA', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  }
+
+  function renderDashRecent() {
+    const rsvps = (window._rsvps || []).slice(0, 8);
+    const tbody = document.getElementById('dashRecentRsvps');
+    if (!rsvps.length) { tbody.innerHTML = '<div class="empty-state">Geen RSVPs nog ontvang nie</div>'; return; }
+    tbody.innerHTML = `<table><thead><tr><th>Naam</th><th>Bywoning</th><th>Gaste</th><th>Lied Versoek</th><th>Datum</th></tr></thead><tbody>
+      ${rsvps.map(r => `
+        <tr>
+          <td class="td-name">${esc(r.firstName)}</td>
+          <td>${r.attending === 'yes' ? '<span class="badge badge-green">Ja</span>' : '<span class="badge badge-red">Nee</span>'}</td>
+          <td>${r.attending === 'yes' ? (r.guests || 1) : '—'}</td>
+          <td class="td-muted">${r.songRequest ? esc(r.songRequest) : '—'}</td>
+          <td class="td-muted">${fmtDate(r.submittedAt)}</td>
+        </tr>`).join('')}
+    </tbody></table>`;
+  }
+
+  window.renderRsvps = function() {
+    const rsvps  = window._rsvps || [];
+    const search = document.getElementById('rsvpSearch').value.toLowerCase();
+    const filter = document.getElementById('rsvpFilter').value;
+    let list = rsvps;
+    if (filter !== 'all') list = list.filter(r => r.attending === filter);
+    if (search) list = list.filter(r => (r.firstName || '').toLowerCase().includes(search) || (r.userEmail || '').toLowerCase().includes(search));
+
+    document.getElementById('rsvpCount').textContent = `${list.length} antwoord(e)`;
+
+    const tbody = document.getElementById('rsvpTableBody');
+    if (!list.length) {
+      tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state">Geen resultate nie</div></td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = list.map((r, i) => `
+      <tr>
+        <td><button class="row-expand-btn" onclick="toggleRsvpRow('rsvp-detail-${i}', this)" title="Sien besonderhede"><i class="fa-solid fa-chevron-down"></i></button></td>
+        <td class="td-name">${esc(r.firstName)}<br><span class="td-email">${esc(r.userEmail || '')}</span></td>
+        <td>${r.attending === 'yes' ? '<span class="badge badge-green">Ja ✓</span>' : '<span class="badge badge-red">Nee ✗</span>'}</td>
+        <td>${r.attending === 'yes' ? (r.guests || 1) : '—'}</td>
+        <td class="td-muted" style="max-width:180px;">${r.songRequest ? esc(r.songRequest) : '<span style="opacity:0.4">—</span>'}</td>
+        <td class="td-muted">${r.dietary || '<span style="opacity:0.4">—</span>'}</td>
+        <td class="td-muted">${fmtDate(r.submittedAt)}</td>
+      </tr>
+      <tr class="rsvp-detail-row" id="rsvp-detail-${i}" style="display:none">
+        <td colspan="7">
+          <div class="rsvp-detail-grid">
+            ${r.plusOneName ? `<div class="rsvp-detail-field"><span class="rsvp-detail-label">+1 Naam</span><span class="rsvp-detail-value">${esc(r.plusOneName)}</span></div>` : ''}
+            ${r.relationship ? `<div class="rsvp-detail-field"><span class="rsvp-detail-label">Verhouding</span><span class="rsvp-detail-value">${esc(r.relationship)}</span></div>` : ''}
+            ${r.dietary ? `<div class="rsvp-detail-field"><span class="rsvp-detail-label">Dieet</span><span class="rsvp-detail-value">${esc(r.dietary)}</span></div>` : ''}
+            ${r.songRequest ? `<div class="rsvp-detail-field"><span class="rsvp-detail-label">Lied Versoek</span><span class="rsvp-detail-value">${esc(r.songRequest)}</span></div>` : ''}
+            ${r.message ? `<div class="rsvp-detail-field" style="grid-column:1/-1"><span class="rsvp-detail-label">Boodskap</span><span class="rsvp-detail-value">${esc(r.message)}</span></div>` : ''}
+            <div class="rsvp-detail-field"><span class="rsvp-detail-label">Gebruiker ID</span><span class="rsvp-detail-value" style="font-size:0.7rem;opacity:0.5">${esc(r.userId || '—')}</span></div>
+          </div>
+        </td>
+      </tr>`).join('');
+  };
+
+  window.toggleRsvpRow = function(id, btn) {
+    const row = document.getElementById(id);
+    const hidden = row.style.display === 'none';
+    row.style.display = hidden ? 'table-row' : 'none';
+    btn.classList.toggle('open', hidden);
+  };
+
+  const catLabels = { huis:'Huis', kombuis:'Kombuis', koffie:'Koffie', wittebrood:'Wittebroodfonds', bordspeletjies:'Bordspeletjies' };
+
+  window.renderGifts = function() {
+    const gifts  = window._gifts || [];
+    const search = document.getElementById('giftSearch').value.toLowerCase();
+    const cat    = document.getElementById('giftCatFilter').value;
+    const status = document.getElementById('giftStatusFilter').value;
+    let list = gifts;
+    if (cat !== 'all')    list = list.filter(g => g.category === cat);
+    if (status === 'reserved') list = list.filter(g => g.reserved);
+    if (status === 'available') list = list.filter(g => !g.reserved);
+    if (search) list = list.filter(g => (g.name || '').toLowerCase().includes(search));
+
+    const reserved = list.filter(g => g.reserved).length;
+    document.getElementById('giftCount').textContent = `${list.length} items · ${reserved} gereserveer`;
+
+    const tbody = document.getElementById('giftTableBody');
+    if (!list.length) {
+      tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state">Geen resultate nie</div></td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = list.map(g => {
+      const thumbHtml = g.photo
+        ? `<img class="gift-thumb" src="assets/gifts/${g.photo}" alt="${esc(g.name)}" onerror="this.style.display='none'">`
+        : `<div class="gift-thumb-placeholder">${(g.name||'?').charAt(0)}</div>`;
+      return `<tr>
+        <td>
+          <div class="gift-cell">
+            ${thumbHtml}
+            <div class="gift-cell-info">
+              <span class="td-name">${esc(g.name)}</span>
+              <span class="td-muted" style="max-width:200px;font-size:0.72rem;">${esc((g.description||'').substring(0,60))}${(g.description||'').length > 60 ? '…' : ''}</span>
+            </div>
+          </div>
+        </td>
+        <td><span class="badge badge-muted">${catLabels[g.category] || g.category}</span></td>
+        <td>${g.reserved
+          ? '<span class="badge badge-green">Gereserveer</span>'
+          : '<span class="badge badge-muted">Beskikbaar</span>'}</td>
+        <td class="td-name">${g.reservedBy ? esc(g.reservedBy) : '<span style="opacity:0.3">—</span>'}</td>
+        <td class="td-email">${g.reservedEmail ? esc(g.reservedEmail) : '<span style="opacity:0.3">—</span>'}</td>
+        <td class="td-muted">${g.reservedAt ? new Date(g.reservedAt).toLocaleDateString('af-ZA') : '<span style="opacity:0.3">—</span>'}</td>
+        <td>
+          <button class="toggle-btn ${g.reserved ? 'is-reserved' : ''}" 
+            id="toggle-${g.id}"
+            onclick="toggleGiftReserved('${g.id}')">
+            ${g.reserved ? 'Maak Oop' : 'Reserveer'}
+          </button>
+        </td>
+      </tr>`;
+    }).join('');
+  };
+
+window.toggleGiftReserved = async function(giftId) {
+  const btn = document.getElementById(`toggle-${giftId}`);
+  btn.disabled = true; btn.textContent = '…';
+  try {
+    const gift = window._gifts.find(g => g.id === giftId);
+    const currentlyReserved = gift?.reserved === true;
+    const newReserved = !currentlyReserved;
+    const update = newReserved
+      ? { reserved: true, available: false }
+      : { reserved: false, available: true, reservedBy: '', reservedEmail: '', reservedAt: null };
+    await updateDoc(doc(db, "gifts", giftId), update);
+    if (gift) Object.assign(gift, update);
+    showToast(newReserved ? 'Item gemerk as gereserveer' : 'Item is weer beskikbaar', 'success');
+    renderGifts();
+    updateStats();
+  } catch(err) {
+    console.error(err);
+    showToast('Kon nie opdateer nie. Probeer weer.', 'error');
+    btn.disabled = false;
+  }
+};
+
+  window.renderSongs = function() {
+    const rsvps = window._rsvps || [];
+    const songs = rsvps.filter(r => r.songRequest && r.songRequest.trim() && r.attending === 'yes');
+    document.getElementById('songCount').textContent = `${songs.length} versoek(e)`;
+    const grid = document.getElementById('songsGrid');
+    if (!songs.length) { grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1">Geen liedjie versoeke nog nie</div>'; return; }
+    grid.innerHTML = songs.map(r => `
+      <div class="song-card">
+        <i class="fa-solid fa-music song-icon"></i>
+        <div>
+          <div class="song-title">${esc(r.songRequest)}</div>
+          <div class="song-guest">— ${esc(r.firstName)}${r.plusOneName ? ' &amp; ' + esc(r.plusOneName) : ''}</div>
+        </div>
+      </div>`).join('');
+  };
+
+  window.signOut    = window._signOut;
+  window.refreshAll = loadAll;
+
+  function esc(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function fmtDate(ts) {
+    if (!ts) return '—';
+    let date;
+    try { date = ts.toDate ? ts.toDate() : new Date(ts); }
+    catch(e) { return '—'; }
+    return date.toLocaleDateString('af-ZA', { day:'2-digit', month:'short', year:'numeric' });
+  }
+
+  function showToast(msg, type = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'show ' + type;
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => { t.className = ''; }, 3000);
+  }
+  window._showToast = showToast;
+</script>
+
+<script>
+  function showPanel(name) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('panel-' + name).classList.add('active');
+    document.getElementById('nav-' + name).classList.add('active');
+  }
+</script>
+
+</body>
+</html>
