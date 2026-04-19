@@ -11,11 +11,11 @@
     :root {
       --cream: #faf1e8;
       --olive: #61642d;
-      --blue:  #768fc7;
       --brown: #6b5c3f;
       --rust:  #792f00;
       --ink:   #2a2016;
       --gold:  #c9a96e;
+      --gold-light: rgba(201,169,110,0.15);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -28,182 +28,259 @@
       min-height: 100vh;
     }
 
-    /* ── Compact Hero ── */
+    /* ── Back button (top) ── */
+    .top-back {
+      position: fixed;
+      top: 1rem; left: 1rem;
+      z-index: 100;
+      display: flex; align-items: center; gap: 0.45rem;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.6rem; font-weight: 500;
+      letter-spacing: 0.28em; text-transform: uppercase;
+      color: var(--cream);
+      background: rgba(42,32,22,0.72);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(201,169,110,0.25);
+      padding: 0.55rem 1rem;
+      text-decoration: none;
+      transition: background 0.25s, border-color 0.25s;
+    }
+    .top-back:hover { background: var(--rust); border-color: var(--rust); }
+    .top-back svg { width: 10px; height: 10px; flex-shrink: 0; }
+
+    /* ── Hero ── */
     .hero {
-      background: var(--olive);
-      padding: 3rem 1.5rem 2.5rem;
+      background: var(--ink);
+      padding: 5rem 1.5rem 3.5rem;
       text-align: center;
       position: relative;
       overflow: hidden;
     }
+    .hero::before {
+      content: '';
+      position: absolute; inset: -50%;
+      width: 200%; height: 200%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 160px; opacity: 0.035; pointer-events: none;
+    }
     .hero::after {
       content: '';
-      position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
-      background: linear-gradient(to right, transparent, rgba(201,169,110,0.45), transparent);
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 50% 40%, rgba(201,169,110,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 50% at 20% 80%, rgba(121,47,0,0.1) 0%, transparent 60%);
+      pointer-events: none;
     }
+    .hero-inner { position: relative; z-index: 2; }
     .hero-eyebrow {
-      font-size: 0.6rem; letter-spacing: 0.45em; text-transform: uppercase;
-      color: rgba(250,241,232,0.45); margin-bottom: 0.6rem; display: block;
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: 1rem; color: var(--gold);
+      letter-spacing: 0.08em; opacity: 0.85;
+      display: flex; align-items: center; gap: 1rem;
+      justify-content: center; margin-bottom: 1.4rem;
     }
+    .hero-eyebrow::before, .hero-eyebrow::after {
+      content: ''; width: 40px; height: 1px;
+      background: linear-gradient(to right, transparent, rgba(201,169,110,0.5));
+    }
+    .hero-eyebrow::after { background: linear-gradient(to left, transparent, rgba(201,169,110,0.5)); }
     .hero h1 {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.6rem, 5vw, 3.5rem);
-      font-weight: 300; color: var(--cream); line-height: 1;
+      font-size: clamp(3rem, 9vw, 5rem);
+      font-weight: 300; color: var(--cream); line-height: 0.95;
     }
     .hero h1 em { font-style: italic; color: var(--gold); }
     .hero-sub {
-      margin-top: 0.7rem;
-      font-family: 'Cormorant Garamond', serif; font-style: italic;
-      font-size: 1.4rem; color: rgba(250,241,232,0.55);
+      margin-top: 1rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      color: rgba(250,241,232,0.5);
+      letter-spacing: 0.04em;
     }
 
-    /* ── Main content ── */
-    .page { max-width: 960px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+    /* ── Page ── */
+    .page { max-width: 860px; margin: 0 auto; padding: 2.5rem 1.2rem 5rem; }
+
+    /* ── Intro note ── */
+    .intro-note {
+      text-align: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1rem, 2.2vw, 1.15rem);
+      color: var(--brown); line-height: 1.75;
+      margin-bottom: 2.5rem;
+      padding: 0 0.5rem;
+      opacity: 0; animation: fadeUp 0.6s ease 0.1s forwards;
+    }
 
     /* ── Distance group ── */
-    .group { margin-bottom: 2rem; }
-
-    .group-header {
-      display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;
+    .group {
+      margin-bottom: 2.2rem;
+      opacity: 0; transform: translateY(18px);
+      animation: fadeUp 0.55s ease forwards;
     }
-    .dist-pill {
-      font-family: 'Jost', sans-serif; font-size: 0.68rem; font-weight: 500;
-      letter-spacing: 0.28em; text-transform: uppercase;
-      color: var(--cream); background: var(--rust);
-      padding: 0.3rem 0.75rem; white-space: nowrap; flex-shrink: 0;
-    }
-    .group-line { flex: 1; height: 1px; background: rgba(107,92,63,0.15); }
-
-    /* ── Cards row — horizontal scroll on mobile ── */
-    .cards-row {
-      display: flex; gap: 0.9rem;
-      flex-wrap: wrap;
-    }
-    @media (max-width: 600px) {
-      .cards-row { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 0.5rem; scroll-snap-type: x mandatory; }
-      .cards-row::-webkit-scrollbar { height: 3px; }
-      .cards-row::-webkit-scrollbar-track { background: rgba(107,92,63,0.1); }
-      .cards-row::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
-    }
-
-    .card {
-      flex: 0 0 auto;
-      width: clamp(160px, 40vw, 210px);
-      border: 1px solid rgba(107,92,63,0.18);
-      background: #fff;
-      padding: 1.1rem 1.2rem;
-      position: relative;
-      scroll-snap-align: start;
-      transition: border-color 0.25s, transform 0.25s;
-    }
-    @media (min-width: 601px) { .card { width: auto; flex: 1 1 180px; } }
-
-    .card::before {
-      content: '';
-      position: absolute; top: 0; left: 0;
-      width: 2px; height: 0;
-      background: var(--gold);
-      transition: height 0.3s ease;
-    }
-    .card:hover { border-color: rgba(201,169,110,0.45); transform: translateY(-2px); }
-    .card:hover::before { height: 100%; }
-
-    .card-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.55rem; font-weight: 400;
-      color: var(--ink); line-height: 1.25;
-      margin-bottom: 0.5rem;
-    }
-    .card-detail {
-      font-size: 1rem; color: var(--brown); line-height: 1.55;
-    }
-    .card-detail a {
-      color: var(--rust); text-decoration: none;
-      display: inline-block; margin-top: 0.3rem;
-      font-size: 0.9rem;
-    }
-    .card-detail a:hover { text-decoration: underline; }
-
-    .card-tag {
-      display: inline-block; margin-top: 0.6rem;
-      font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase;
-      color: var(--cream); background: var(--olive);
-      padding: 0.2rem 0.55rem;
-    }
-
-    /* ── Shuttle box ── */
-    .shuttle {
-      background: var(--blue);
-      padding: 1.6rem 2rem;
-      margin-top: 2.5rem;
-      position: relative; overflow: hidden;
-    }
-    .shuttle::before {
-      content: ''; position: absolute; inset: 0.7rem;
-      border: 1px solid rgba(250,241,232,0.14);
-      pointer-events: none;
-    }
-    .shuttle-top {
-      display: flex; align-items: center; gap: 0.7rem;
-      margin-bottom: 1rem;
-    }
-    .shuttle-icon {
-      font-family: 'IM Fell English', serif;
-      font-size: 1.4rem; color: var(--gold);
-    }
-    .shuttle-top h2 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.4rem; font-weight: 400; color: var(--cream);
-    }
-    .shuttle-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
-    }
-    @media (max-width: 420px) { .shuttle-grid { grid-template-columns: 1fr; } }
-    .shuttle-item h4 {
-      font-size: 0.58rem; letter-spacing: 0.28em; text-transform: uppercase;
-      color: rgba(250,241,232,0.45); margin-bottom: 0.3rem;
-    }
-    .shuttle-item p {
-      font-size: 0.85rem; color: rgba(250,241,232,0.8); line-height: 1.55;
-    }
-    .shuttle-item a { color: var(--gold); text-decoration: none; }
-    .shuttle-item a:hover { text-decoration: underline; }
-
-    /* ── Back button ── */
-    .back-row { text-align: center; margin-top: 3rem; }
-    .btn-back {
-      display: inline-block;
-      font-family: 'Jost', sans-serif; font-size: 0.68rem; font-weight: 500;
-      letter-spacing: 0.3em; text-transform: uppercase;
-      color: var(--cream); background: var(--rust);
-      padding: 0.85rem 2.2rem; text-decoration: none;
-      transition: background 0.25s, transform 0.2s;
-    }
-    .btn-back:hover { background: var(--brown); transform: translateY(-1px); }
-
-    /* fade-in on load */
-    .group { opacity: 0; transform: translateY(16px); animation: up 0.5s ease forwards; }
-    .group:nth-child(1) { animation-delay: 0.05s; }
     .group:nth-child(2) { animation-delay: 0.12s; }
     .group:nth-child(3) { animation-delay: 0.19s; }
     .group:nth-child(4) { animation-delay: 0.26s; }
     .group:nth-child(5) { animation-delay: 0.33s; }
     .group:nth-child(6) { animation-delay: 0.40s; }
     .group:nth-child(7) { animation-delay: 0.47s; }
-    .shuttle { opacity: 0; animation: up 0.5s ease 0.54s forwards; }
-    @keyframes up { to { opacity: 1; transform: none; } }
+    .group:nth-child(8) { animation-delay: 0.54s; }
+    @keyframes fadeUp { to { opacity: 1; transform: none; } }
+
+    .group-header {
+      display: flex; align-items: center; gap: 0.9rem;
+      margin-bottom: 0.85rem;
+    }
+    .dist-pill {
+      font-family: 'Jost', sans-serif;
+      font-size: 0.62rem; font-weight: 500;
+      letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--cream); background: var(--rust);
+      padding: 0.28rem 0.7rem; white-space: nowrap; flex-shrink: 0;
+    }
+    .group-line { flex: 1; height: 1px; background: rgba(107,92,63,0.18); }
+
+    /* ── Cards ── */
+    .cards-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.75rem;
+    }
+    @media (max-width: 480px) {
+      .cards-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.65rem;
+      }
+    }
+
+    .card {
+      border: 1px solid rgba(107,92,63,0.18);
+      background: #fff;
+      padding: 1.1rem 1.15rem 1.2rem;
+      position: relative;
+      transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+    }
+    .card::after {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 2px; background: var(--gold);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    .card:hover { border-color: rgba(201,169,110,0.4); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(42,32,22,0.08); }
+    .card:hover::after { transform: scaleX(1); }
+
+    .card-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.15rem, 3vw, 1.4rem);
+      font-weight: 400; color: var(--ink);
+      line-height: 1.2; margin-bottom: 0.55rem;
+    }
+    .card-detail {
+      font-size: 0.8rem; color: var(--brown); line-height: 1.6;
+    }
+    .card-detail a {
+      color: var(--rust); text-decoration: none;
+      display: block; margin-top: 0.3rem;
+      font-size: 0.78rem; transition: opacity 0.2s;
+    }
+    .card-detail a:hover { opacity: 0.7; }
+
+    /* ── Shuttle ── */
+    .shuttle {
+      background: var(--olive);
+      padding: 1.8rem 1.8rem 2rem;
+      margin-top: 2rem;
+      position: relative; overflow: hidden;
+      opacity: 0; animation: fadeUp 0.55s ease 0.58s forwards;
+    }
+    .shuttle::before {
+      content: ''; position: absolute; inset: 0.8rem;
+      border: 1px solid rgba(250,241,232,0.12);
+      pointer-events: none;
+    }
+    .shuttle-header {
+      display: flex; align-items: center; gap: 0.7rem;
+      margin-bottom: 1.2rem;
+    }
+    .shuttle-icon {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: rgba(201,169,110,0.18);
+      border: 1px solid rgba(201,169,110,0.3);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .shuttle-icon svg { width: 14px; height: 14px; fill: var(--gold); }
+    .shuttle-header h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem; font-weight: 400; color: var(--cream);
+    }
+    .shuttle-header h2 em { font-style: italic; color: var(--gold); }
+    .shuttle-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+    }
+    @media (max-width: 400px) { .shuttle-grid { grid-template-columns: 1fr; gap: 0.8rem; } }
+    .shuttle-item h4 {
+      font-size: 0.55rem; letter-spacing: 0.32em; text-transform: uppercase;
+      color: rgba(250,241,232,0.38); margin-bottom: 0.35rem;
+    }
+    .shuttle-item p {
+      font-size: 0.88rem; color: rgba(250,241,232,0.82); line-height: 1.6;
+    }
+    .shuttle-item a { color: var(--gold); text-decoration: none; }
+    .shuttle-item a:hover { text-decoration: underline; }
+    .shuttle-note {
+      margin-top: 1rem;
+      font-size: 0.78rem;
+      color: rgba(250,241,232,0.45);
+      font-style: italic;
+      line-height: 1.55;
+    }
+
+    /* ── Bottom back button ── */
+    .back-row {
+      text-align: center; margin-top: 3rem;
+      opacity: 0; animation: fadeUp 0.5s ease 0.65s forwards;
+    }
+    .btn-back {
+      display: inline-flex; align-items: center; gap: 0.55rem;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.68rem; font-weight: 500;
+      letter-spacing: 0.32em; text-transform: uppercase;
+      color: var(--cream); background: var(--rust);
+      padding: 0.9rem 2.4rem; text-decoration: none;
+      transition: background 0.25s, transform 0.2s;
+    }
+    .btn-back:hover { background: var(--brown); transform: translateY(-1px); }
+    .btn-back svg { width: 10px; height: 10px; }
   </style>
 </head>
-
 <body>
 
+<!-- Fixed top-left back button -->
+<a class="top-back" href="index.html">
+  <svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M7 1L3 5L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  Terug
+</a>
+
 <header class="hero">
-  <span class="hero-eyebrow">17 Oktober 2026 · Intiem Weddings, Pretoria</span>
-  <h1>Waar Slaap <em>Jy?</em></h1>
-  <p class="hero-sub">Akkommodasie naby die venue — gesorteer op afstand.</p>
+  <div class="hero-inner">
+    <div class="hero-eyebrow">17 Oktober 2026</div>
+    <h1>Waar Slaap <em>Jy?</em></h1>
+    <p class="hero-sub">Akkommodasie naby Intiem Weddings — gesorteer op afstand.</p>
+  </div>
 </header>
 
 <main class="page">
+
+  <p class="intro-note">
+    Reël gerus vroegtydig — Oktober is n besige seisoen.<br>
+    Al die opsies hieronder is binne 16 km van die venue.
+  </p>
 
   <!-- ≈ 2 km -->
   <div class="group">
@@ -215,16 +292,16 @@
       <div class="card">
         <div class="card-name">Cussonia Crest</div>
         <div class="card-detail">
-          Reg oorkant Intiem.<br>
-          <a href="mailto:info@cussoniacrest.com">info@cussoniacrest.com</a><br>
+          Reg oorkant Intiem.
+          <a href="mailto:info@cussoniacrest.com">info@cussoniacrest.com</a>
           <a href="tel:0835663363">083 566 3363 · Melandi</a>
         </div>
       </div>
       <div class="card">
-        <div class="card-name">Graceland Conference &amp; Lifestyle Centre</div>
+        <div class="card-name">Graceland Conference &amp; Lifestyle</div>
         <div class="card-detail">
-          Ruim, gemaklike verblyf.<br>
-          <a href="https://www.graceland-lifestylecentre.com" target="_blank">graceland-lifestylecentre.com →</a>
+          Ruim, gemaklike verblyf.
+          <a href="https://www.graceland-lifestylecentre.com" target="_blank" rel="noopener">graceland-lifestylecentre.com →</a>
         </div>
       </div>
     </div>
@@ -239,15 +316,15 @@
     <div class="cards-row">
       <div class="card">
         <div class="card-name">Bly 'n Bietjie</div>
-        <div class="card-detail"><a href="http://www.blynbietjie.co.za/" target="_blank">blynbietjie.co.za →</a></div>
+        <div class="card-detail"><a href="http://www.blynbietjie.co.za/" target="_blank" rel="noopener">blynbietjie.co.za →</a></div>
       </div>
       <div class="card">
         <div class="card-name">Shai Shai Hills</div>
-        <div class="card-detail"><a href="https://shaishaihills.co.za/" target="_blank">shaishaihills.co.za →</a></div>
+        <div class="card-detail"><a href="https://shaishaihills.co.za/" target="_blank" rel="noopener">shaishaihills.co.za →</a></div>
       </div>
       <div class="card">
         <div class="card-name">De Oude Kothuis</div>
-        <div class="card-detail"><a href="https://www.lekkeslaap.co.za/akkommodasie/de-oude-kothuis" target="_blank">Sien op Lekkeslaap →</a></div>
+        <div class="card-detail"><a href="https://www.lekkeslaap.co.za/akkommodasie/de-oude-kothuis" target="_blank" rel="noopener">Sien op Lekkeslaap →</a></div>
       </div>
     </div>
   </div>
@@ -262,10 +339,7 @@
       <div class="card">
         <div class="card-name">Bethesda Lodge</div>
         <div class="card-detail">
-          Spesiale Intiem-afslag beskikbaar.<br>
-          <a href="https://bethesdalodge.co.za/" target="_blank">bethesdalodge.co.za →</a><br>
-          <a href="https://book.nightsbridge.com/36213?promocode=INTIEMVENUE2026" target="_blank">Bespreek met afslag →</a>
-          <span class="card-tag" style="display:block;margin-top:0.5rem">Intiem-afslag</span>
+          <a href="https://book.nightsbridge.com/36213?promocode=INTIEMVENUE2026" target="_blank" rel="noopener">Bespreek aanlyn →</a>
         </div>
       </div>
     </div>
@@ -280,7 +354,7 @@
     <div class="cards-row">
       <div class="card">
         <div class="card-name">Tutuwedzo Lodge</div>
-        <div class="card-detail"><a href="http://tutuwedzo.co.za/" target="_blank">tutuwedzo.co.za →</a></div>
+        <div class="card-detail"><a href="http://tutuwedzo.co.za/" target="_blank" rel="noopener">tutuwedzo.co.za →</a></div>
       </div>
     </div>
   </div>
@@ -294,7 +368,7 @@
     <div class="cards-row">
       <div class="card">
         <div class="card-name">Cheetah Lodge</div>
-        <div class="card-detail"><a href="https://www.lekkeslaap.co.za/akkommodasie/cheetah-lodge-19" target="_blank">Sien op Lekkeslaap →</a></div>
+        <div class="card-detail"><a href="https://www.lekkeslaap.co.za/akkommodasie/cheetah-lodge-19" target="_blank" rel="noopener">Sien op Lekkeslaap →</a></div>
       </div>
     </div>
   </div>
@@ -308,27 +382,27 @@
     <div class="cards-row">
       <div class="card">
         <div class="card-name">Kassaboera Lodge</div>
-        <div class="card-detail"><a href="https://www.kassaboera.co.za/" target="_blank">kassaboera.co.za →</a></div>
+        <div class="card-detail"><a href="https://www.kassaboera.co.za/" target="_blank" rel="noopener">kassaboera.co.za →</a></div>
       </div>
       <div class="card">
         <div class="card-name">Seasons Golf Resort</div>
-        <div class="card-detail"><a href="https://www.seasonssa.co.za/" target="_blank">seasonssa.co.za →</a></div>
+        <div class="card-detail"><a href="https://www.seasonssa.co.za/" target="_blank" rel="noopener">seasonssa.co.za →</a></div>
       </div>
       <div class="card">
         <div class="card-name">La Montagne Guest Lodge</div>
-        <div class="card-detail"><a href="https://www.lamontagne-guestlodge.co.za/" target="_blank">lamontagne-guestlodge.co.za →</a></div>
+        <div class="card-detail"><a href="https://www.lamontagne-guestlodge.co.za/" target="_blank" rel="noopener">lamontagne-guestlodge.co.za →</a></div>
       </div>
       <div class="card">
         <div class="card-name">Migdsh Guesthouse</div>
-        <div class="card-detail"><a href="https://m.lekkeslaap.co.za/akkommodasie/migdsh-guesthouse" target="_blank">Sien op Lekkeslaap →</a></div>
+        <div class="card-detail"><a href="https://m.lekkeslaap.co.za/akkommodasie/migdsh-guesthouse" target="_blank" rel="noopener">Sien op Lekkeslaap →</a></div>
       </div>
       <div class="card">
         <div class="card-name">Three Oaks &amp; an Aloe</div>
-        <div class="card-detail"><a href="https://www.3oa.co.za/" target="_blank">3oa.co.za →</a></div>
+        <div class="card-detail"><a href="https://www.3oa.co.za/" target="_blank" rel="noopener">3oa.co.za →</a></div>
       </div>
       <div class="card">
         <div class="card-name">Nehema Manor</div>
-        <div class="card-detail"><a href="https://nehema.co.za/" target="_blank">nehema.co.za →</a></div>
+        <div class="card-detail"><a href="https://nehema.co.za/" target="_blank" rel="noopener">nehema.co.za →</a></div>
       </div>
     </div>
   </div>
@@ -342,21 +416,25 @@
     <div class="cards-row">
       <div class="card">
         <div class="card-name">Stirling Manor</div>
-        <div class="card-detail"><a href="https://stirlingmanor.business.site/?utm_source=gmb&utm_medium=referral" target="_blank">Sien webwerf →</a></div>
+        <div class="card-detail"><a href="https://stirlingmanor.business.site/" target="_blank" rel="noopener">Sien webwerf →</a></div>
       </div>
     </div>
   </div>
 
   <!-- Shuttle -->
   <div class="shuttle">
-    <div class="shuttle-top">
-      <span class="shuttle-icon">◎</span>
-      <h2>Shuttle Diens</h2>
+    <div class="shuttle-header">
+      <div class="shuttle-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 16V7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v9M2 16h20M6 19a1 1 0 1 0 2 0 1 1 0 0 0-2 0M16 19a1 1 0 1 0 2 0 1 1 0 0 0-2 0" stroke="#c9a96e" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
+      <h2>Shuttle <em>Diens</em></h2>
     </div>
     <div class="shuttle-grid">
       <div class="shuttle-item">
-        <h4>Diens</h4>
-        <p><strong style="color:var(--cream)">J &amp; S Shuttles</strong><br>Joniel Steyn</p>
+        <h4>Verskaffer</h4>
+        <p><strong style="color:var(--cream);font-weight:400;">J &amp; S Shuttles</strong><br>Joniel Steyn</p>
       </div>
       <div class="shuttle-item">
         <h4>Kontak</h4>
@@ -366,13 +444,18 @@
         </p>
       </div>
     </div>
+    <p class="shuttle-note">Kontak Joniel direk om 'n shuttle te bespreek vir die aand van 17 Oktober.</p>
   </div>
 
   <div class="back-row">
-    <a class="btn-back" href="index.html">← Terug na die Troudag</a>
+    <a class="btn-back" href="index.html">
+      <svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M7 1L3 5L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Terug na die Troudag
+    </a>
   </div>
 
 </main>
-
 </body>
 </html>
