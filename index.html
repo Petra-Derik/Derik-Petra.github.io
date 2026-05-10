@@ -158,7 +158,8 @@
       background: transparent;
       border: none;
       border-bottom: 1px solid rgba(250,241,232,0.15);
-      padding: 0.6rem 0 0.6rem 1.6rem;
+      padding: 0.6rem 2rem 0.6rem 1.6rem;
+      min-width: 0;
       font-family: 'Jost', sans-serif;
       font-size: 0.95rem;
       font-weight: 300;
@@ -168,7 +169,24 @@
     }
     .login-field input::placeholder { color: rgba(250,241,232,0.2); }
     .login-field input:focus { border-bottom-color: var(--gold); }
-    .pw-toggle { position: absolute; right: 0; background: none; border: none; color: rgba(250,241,232,0.28); cursor: pointer; font-size: 0.8rem; padding: 0.4rem; transition: color 0.2s; }
+    .pw-toggle {
+  position: absolute;
+  right: 0;
+  background: none;
+  border: none;
+  color: rgba(250,241,232,0.28);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.2rem;
+  transition: color 0.2s;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  flex-shrink: 0;
+  touch-action: manipulation;
+}
     .pw-toggle:hover { color: var(--gold); }
     .login-error { font-size: 0.75rem; color: #e07b5a; text-align: center; min-height: 1.1em; letter-spacing: 0.04em; opacity: 0; transition: opacity 0.3s; }
     .login-error.show { opacity: 1; }
@@ -466,6 +484,13 @@
   color: var(--rust);
 }
 
+@media (max-width: 380px) {
+  .login-card { padding: 1.4rem 1.2rem; gap: 1.1rem; }
+  .login-names { font-size: clamp(2.6rem, 13vw, 3.2rem); }
+  .login-field input { font-size: 0.88rem; }
+  .login-ornament { font-size: 0.9rem; margin-bottom: 1.2rem; }
+}
+
   </style>
 </head>
 <body>
@@ -519,9 +544,9 @@
     <div class="divider-line reveal reveal-delay-2"><div class="divider-dot"></div></div>
     <p class="welcome-letter reveal reveal-delay-2">
       Ons is so opgewonde vir die pad wat voorlê<br><br>
-      Met die <strong>Here</strong> se hand wat ons lei.<br>Waar twee harte vir altyd saam bly.<br><br>
-      Kom vier saam ons hierdie spesiale dag,<br>By <strong>Intiem</strong> wag 'n troue vol vreugde &amp; lag,<br><br>
-      Bring n drankie om te geniet vir die fees,<br>Reël gerus blyplek om te genees.<br><br>
+      Met die <strong>Here</strong> se hand wat ons lei<br>Waar twee harte vir altyd saam bly<br><br>
+      Kom vier saam ons hierdie spesiale dag<br>By <strong>Intiem</strong> wag 'n troue vol vreugde en lag<br><br>
+      Bring 'n drankie om te geniet vir die fees<br>Reël gerus blyplek om te genees<br><br>
       Toekomstige <strong>Mnr &amp; Mev Korf</strong> sien jou daar!
     </p>
     <p class="welcome-signature reveal reveal-delay-3">Derik &amp; Petra</p>
@@ -566,23 +591,23 @@
     <div class="divider-line reveal reveal-delay-2"><div class="divider-dot" style="background:var(--rust);box-shadow:0 0 6px var(--rust)"></div></div>
     <div class="attire-grid">
       <div class="attire-item reveal reveal--left">
-        <h3>Formeel &amp; Elegant</h3>
-        <p>Ons nooi jou uit om in <strong>formele drag</strong> te kom. Vloerlengte rokke, elegante aandrokke, pakke of nette formele klere.</p>
+        <h3>Formeel en Elegant</h3>
+        <p>Ons nooi jou uit om in <strong>formele drag</strong> te kom. Vloerlengte elegante rokke, pakke of nette formele klere.</p>
       </div>
       <div class="attire-item reveal reveal--right reveal-delay-1">
         <h3>Ons Kleurpalet</h3>
-        <p>Neutraal, saliegroen en terrakotta is alles welkom.</p>
+        <p>Neutrale sagte kleure is alles welkom.</p>
         <div class="palette-swatches">
           <div class="swatch" style="background:#61642d"></div>
-          <div class="swatch" style="background:#6b5c3f"></div>
-          <div class="swatch" style="background:#792f00"></div>
-          <div class="swatch" style="background:#be9c66"></div>
+          <div class="swatch" style="background:#9c7f51"></div>
+          <div class="swatch" style="background:#572e00"></div>
           <div class="swatch" style="background:#aab181"></div>
+          <div class="swatch" style="background:#854020"></div>
         </div>
       </div>
       <div class="attire-item reveal reveal--left reveal-delay-2">
         <h3>Vermy Asseblief</h3>
-        <p>Vermy asseblief <strong>wit, rooi of room</strong> sodat dit nie met die bruidspartytjie bots nie.</p>
+        <p>Vermy asseblief <strong>wit, rooi, ligblou of room</strong> sodat dit nie met die bruidspartytjie bots nie.</p>
       </div>
       <div class="attire-item reveal reveal--right reveal-delay-3">
         <h3>Praktiese Wenke</h3>
@@ -596,16 +621,17 @@
   <div class="noise"></div>
   <div class="itin-header reveal">
     <span class="section-label">Saterdag, 17 Oktober 2026</span>
-    <h2 class="section-title">Die Dag se <em>Program</em></h2>
+    <h2 class="section-title mb-1">Die Dag se <em>Program</em></h2>
+    <p class="reveal reveal-delay-1 mt-5" style="color: white;">(Voorlopige beplanning)</p>
   </div>
   <div class="timeline">
-    <div class="tl-item reveal"><div class="tl-content"><h4>Aankoms &amp; Welkom</h4><p>Gaste begin arriveer en word verwelkom</p></div><div class="tl-dot"><div class="tl-dot-inner"></div></div><div class="tl-time">15:30</div></div>
-    <div class="tl-item reveal"><div class="tl-content"><h4>Ingang</h4><p>Gaste stap in venue en kry verwelkomingsdrankie op die grasperk.</p></div><div class="tl-dot"><div class="tl-dot-inner"></div></div><div class="tl-time">16:00</div></div>
-    <div class="tl-item reveal reveal-delay-1"><div class="tl-content"><h4>Troueseremonie</h4><p>Ons wissel ons geloftes uit. Wees asseblief teen 16:50 gesit.</p></div><div class="tl-dot"><div class="tl-dot-inner"></div></div><div class="tl-time">17:00</div></div>
-    <div class="tl-item reveal reveal-delay-3"><div class="tl-content"><h4>Huweliksontvangs</h4><p>Meng, gesels en geniet drankies terwyl die bruidspartytjie foto's neem.</p></div><div class="tl-dot"><div class="tl-dot-inner"></div></div><div class="tl-time">18:00</div></div>
-    <div class="tl-item reveal reveal-delay-1"><div class="tl-content"><h4>Aandete Word Bedien</h4><p>'n Driegang gesitete ete met toesprake van die mense wat ons die meeste liefhet.</p></div><div class="tl-dot"><div class="tl-dot-inner"></div></div><div class="tl-time">19:00</div></div>
+    <div class="tl-item reveal"><div class="tl-content"><h4>Aankoms en Welkom</h4><p>Gaste begin arriveer en word verwelkom</p></div><div class="tl-dot"><div class="tl-dot-inner"></div></div><div class="tl-time">15:00</div></div>
+    <div class="tl-item reveal"><div class="tl-content"><h4>Ingang</h4><p>Gaste stap in venue en kry verwelkomingsdrankie op die grasperk.</p></div><div class="tl-dot"><div class="tl-dot-inner"></div></div><div class="tl-time">15:30</div></div>
+    <div class="tl-item reveal reveal-delay-1"><div class="tl-content"><h4>Troueseremonie</h4><p>Ons wissel ons geloftes uit. Wees asseblief teen 15:50 gesit.</p></div><div class="tl-dot"><div class="tl-dot-inner"></div></div><div class="tl-time">16:00</div></div>
+    <div class="tl-item reveal reveal-delay-3"><div class="tl-content"><h4>Huweliksontvangs</h4><p>Meng, gesels en geniet drankies terwyl die bruidspartytjie foto's neem.</p></div><div class="tl-dot"><div class="tl-dot-inner"></div></div><div class="tl-time">17:00</div></div>
+    <div class="tl-item reveal reveal-delay-1"><div class="tl-content"><h4>Aandete Word Bedien</h4><p>'n Smaaklike gesit ete met toesprake van ons geliefdes.</p></div><div class="tl-dot"><div class="tl-dot-inner"></div></div><div class="tl-time">19:00</div></div>
     <div class="tl-item reveal reveal-delay-1"><div class="tl-content"><h4>Feesviering</h4><p>Ons vier die nuut getroude paartjie en kuier gesellig saam. Vertrek later na boma-area.</p></div><div class="tl-dot"><div class="tl-dot-inner"></div></div><div class="tl-time">20:00</div></div>
-    <div class="tl-item reveal reveal-delay-4"><div class="tl-content"><h4>Totsiens!</h4><p>Ons swaai totsiens en begin vir ewig. Reisveilig almal!</p></div><div class="tl-dot"><div class="tl-dot-inner"></div></div><div class="tl-time">23:30</div></div>
+    <div class="tl-item reveal reveal-delay-4"><div class="tl-content"><h4>Totsiens!</h4><p>Ons swaai totsiens en begin vir ewig. Reis veilig almal!</p></div><div class="tl-dot"><div class="tl-dot-inner"></div></div><div class="tl-time">23:30</div></div>
   </div>
 </section>
 
@@ -645,23 +671,18 @@
           <img src="assets/Bali.jpg" alt="Wittebrood bestemming — Bali">
           <div class="giving-block-header-text">
             <span class="giving-block-tag">Wittebroodfonds</span>
-            <div class="giving-block-title">Ons <em>Droom</em>reis<br><span style="font-size:0.7em;opacity:0.7;">Bali · Europa</span></div>
+            <div class="giving-block-title">Ons <em>Droom</em>reis<br></div>
           </div>
         </div>
         <div class="giving-block-body">
-          <div class="wb-experiences-inline">
-            <div class="wb-exp-tile" onclick="selectExpInline(this)"><span class="wb-exp-tile-icon"><i class="fa-solid fa-champagne-glasses"></i></span><span class="wb-exp-tile-name">Romantiese Aandete</span></div>
-            <div class="wb-exp-tile" onclick="selectExpInline(this)"><span class="wb-exp-tile-icon"><i class="fa-solid fa-sailboat"></i></span><span class="wb-exp-tile-name">Sonreis Uitstappie</span></div>
-            <div class="wb-exp-tile" onclick="selectExpInline(this)"><span class="wb-exp-tile-icon"><i class="fa-solid fa-house"></i></span><span class="wb-exp-tile-name">Een Nag Verblyf</span></div>
-          </div>
           <div class="banking-block">
             <div class="banking-block-label">Bankbesonderhede</div>
             <div class="banking-rows">
-              <div class="banking-row"><span class="bk-label">Naam</span><span class="bk-value">D &amp; P Korf</span></div>
+              <div class="banking-row"><span class="bk-label">Naam</span><span class="bk-value">Derik en Petra</span></div>
               <div class="banking-row"><span class="bk-label">Bank</span><span class="bk-value">FNB</span></div>
-              <div class="banking-row"><span class="bk-label">Rekening</span><span class="bk-value mono">6293 8219 632 <button class="copy-btn" onclick="copyText('62938219632',this)"><i class="fa-regular fa-copy"></i><span class="copy-label"> Kopieer</span></button></span></div>
+              <div class="banking-row"><span class="bk-label">Rekening</span><span class="bk-value mono">6320 770 8132<button class="copy-btn" onclick="copyText('63207708132',this)"><i class="fa-regular fa-copy"></i><span class="copy-label"> Kopieer</span></button></span></div>
               <div class="banking-row"><span class="bk-label">Takkode</span><span class="bk-value mono">250 655 <button class="copy-btn" onclick="copyText('250655',this)"><i class="fa-regular fa-copy"></i><span class="copy-label"> Kopieer</span></button></span></div>
-              <div class="banking-row"><span class="bk-label">Verwysing</span><span class="bk-value">Jou Naam + "Wittebrood"</span></div>
+              <div class="banking-row"><span class="bk-label">Verwysing</span><span class="bk-value">Opsioneel</span></div>
             </div>
           </div>
           <p class="giving-note">Geen geskenk is te klein nie. Elke bietjie bring ons nader aan ons droom.</p>
