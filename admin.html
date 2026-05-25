@@ -770,36 +770,52 @@
         <td class="td-name">${g.reservedBy ? esc(g.reservedBy) : '<span style="opacity:0.3">—</span>'}</td>
         <td class="td-email">${g.reservedEmail ? esc(g.reservedEmail) : '<span style="opacity:0.3">—</span>'}</td>
         <td class="td-muted">${g.reservedAt ? new Date(g.reservedAt).toLocaleDateString('af-ZA') : '<span style="opacity:0.3">—</span>'}</td>
-        <td>
-          <button class="toggle-btn ${g.reserved ? 'is-reserved' : ''}" 
-            id="toggle-${g.id}"
-            onclick="toggleGiftReserved('${g.id}')">
-            ${g.reserved ? 'Maak Oop' : 'Reserveer'}
-          </button>
+       <td>
+          ${g.reserved
+            ? `<button class="toggle-btn is-reserved" id="toggle-${g.id}" onclick="confirmUnreserve('${g.id}', '${(g.reservedBy||'').replace(/'/g,"\\'")}')">
+                <i class="fa-solid fa-rotate-left" style="margin-right:0.35rem;font-size:0.75rem;"></i>Onreserveer
+               </button>`
+            : `<span style="opacity:0.25;font-size:0.72rem;letter-spacing:0.1em;">—</span>`}
         </td>
       </tr>`;
     }).join('');
   };
 
-window.toggleGiftReserved = async function(giftId) {
+window.confirmUnreserve = function(giftId, reservedBy) {
+  const gift = window._gifts.find(g => g.id === giftId);
+  if (!gift) return;
+  const name = reservedBy || 'hierdie persoon';
+  if (!confirm(`Onreserveer "${gift.name}"?\n\nGereserveer deur: ${name}\n\nDit sal die reservering permanent uitvee.`)) return;
+  unreserveGift(giftId);
+};
+
+window.unreserveGift = async function(giftId) {
   const btn = document.getElementById(`toggle-${giftId}`);
-  btn.disabled = true; btn.textContent = '…';
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="margin-right:0.35rem;font-size:0.75rem;"></i>Besig…'; }
   try {
+    const { deleteField } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+    await updateDoc(doc(db, "gifts", giftId), {
+      reserved:      false,
+      available:     true,
+      reservedBy:    deleteField(),
+      reservedEmail: deleteField(),
+      reservedAt:    deleteField(),
+    });
     const gift = window._gifts.find(g => g.id === giftId);
-    const currentlyReserved = gift?.reserved === true;
-    const newReserved = !currentlyReserved;
-    const update = newReserved
-      ? { reserved: true, available: false }
-      : { reserved: false, available: true, reservedBy: '', reservedEmail: '', reservedAt: null };
-    await updateDoc(doc(db, "gifts", giftId), update);
-    if (gift) Object.assign(gift, update);
-    showToast(newReserved ? 'Item gemerk as gereserveer' : 'Item is weer beskikbaar', 'success');
+    if (gift) {
+      gift.reserved      = false;
+      gift.available     = true;
+      delete gift.reservedBy;
+      delete gift.reservedEmail;
+      delete gift.reservedAt;
+    }
+    showToast('Reservering verwyder — item is weer beskikbaar ✓', 'success');
     renderGifts();
     updateStats();
   } catch(err) {
     console.error(err);
-    showToast('Kon nie opdateer nie. Probeer weer.', 'error');
-    btn.disabled = false;
+    showToast('Kon nie onreserveer nie. Probeer weer.', 'error');
+    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-rotate-left" style="margin-right:0.35rem;font-size:0.75rem;"></i>Onreserveer'; }
   }
 };
 
